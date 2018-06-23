@@ -21,7 +21,7 @@ class CreateSchoolsTable extends Migration
             $table->string('proffesor');
             $table->boolean('active')->default(true);
             $table->integer('city_id')->unsigned();
-            $table->foreign('city_id')->references('id')->on('citys')->onUpdate('cascade');
+            $table->foreign('city_id')->references('id')->on('cities')->onUpdate('cascade');
             $table->timestamps();
         });
     }

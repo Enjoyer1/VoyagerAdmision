@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCitysTable extends Migration
+class CreateCitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCitysTable extends Migration
      */
     public function up()
     {
-        Schema::create('citys', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->default('Talca','75');
             $table->integer('region_id')->unsigned();
@@ -29,6 +29,6 @@ class CreateCitysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('citys');
+        Schema::dropIfExists('cities');
     }
 }

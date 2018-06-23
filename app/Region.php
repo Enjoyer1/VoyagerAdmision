@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use TCG\Voyager\Facades\Voyager;
 
 class Region extends Model
 {
-    public $timestamps=false;
+    protected $table = 'regions';
 
-    public function citys(){
+    public $timestamps = false;
+
+    public function cities(){
 
         return $this->hasMany('App\City');
     }
