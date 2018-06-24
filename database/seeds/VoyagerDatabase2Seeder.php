@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use TCG\Voyager\Traits\Seedable;
 
-class VoyagerDummyDatabaseSeeder extends Seeder
+class VoyagerDatabase2Seeder extends Seeder
 {
     use Seedable;
 
@@ -17,10 +17,12 @@ class VoyagerDummyDatabaseSeeder extends Seeder
     public function run()
     {
         $this->seedersPath = database_path('seeds').'/';
-        $this->seed('CategoriesTableSeeder');
-        $this->seed('UsersTableSeeder');
-        $this->seed('PostsTableSeeder');
-        $this->seed('PagesTableSeeder');
+        $this->seed('VoyagerDatabaseSeeder');
+        $this->seed('VoyagerDummyDatabaseSeeder');
+        $this->seed('DataTypes2TableSeeder');
+        $this->seed('DataRows2TableSeeder');
+        $this->seed('MenuItems2TableSeeder');
+        $this->seed('Permissions2TableSeeder');
         $this->seed('PermissionRoleTableSeeder');
 
     }

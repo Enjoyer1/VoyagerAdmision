@@ -69,7 +69,7 @@ class DataRows2TableSeeder extends Seeder
         if (!$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'relationship',
-                'display_name' => ('Relación'),
+                'display_name' => __('voyager::seeders.data_types.city.plural'),
                 'required'     => 0,
                 'browse'       => 1,
                 'read'         => 1,
@@ -122,7 +122,7 @@ class DataRows2TableSeeder extends Seeder
         if (!$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'relationship',
-                'display_name' => __('voyager::seeders.data_rows.role'),
+                'display_name' => __('voyager::seeders.data_types.region.singular'),
                 'required'     => 0,
                 'browse'       => 1,
                 'read'         => 1,
