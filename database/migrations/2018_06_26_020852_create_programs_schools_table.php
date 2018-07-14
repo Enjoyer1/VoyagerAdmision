@@ -15,9 +15,17 @@ class CreateProgramsSchoolsTable extends Migration
     {
         Schema::create('programs_schools', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('program_id','10');
-            $table->string('school_id','10');
-            $table->date('start_date');
+
+            $table->integer('program_id')->unsigned()->nullable();
+            $table->foreign('program_id')->references('id')->on('programs')->onDelete('cascade');
+
+            $table->integer('school_id')->unsigned()->nullable();
+            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
+
+            $table->string('file')->nullable();
+            $table->boolean('active')->default('true');
+
+
             $table->timestamps();
         });
     }

@@ -28,7 +28,7 @@ class MenuItems2TableSeeder extends Seeder
                 'icon_class' => 'voyager-images',
                 'color'      => null,
                 'parent_id'  => null,
-                'order'      => 15,
+                'order'      => 6,
             ])->save();
         }
 
