@@ -15,7 +15,6 @@ class MenuItems2TableSeeder extends Seeder
     {
         $menu = Menu::where('name', 'admin')->firstOrFail();
 
-
         $locationMenuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
             'title'   => ('Locaciones'),
@@ -32,11 +31,12 @@ class MenuItems2TableSeeder extends Seeder
             ])->save();
         }
 
+
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => __('voyager::seeders.menu_items.regions'),
+            'title'   => 'Ciudades',
             'url'     => '',
-            'route'   => 'voyager.regions.index',
+            'route'   => 'voyager.ciudades.index',
         ]);
         if (!$menuItem->exists) {
             $menuItem->fill([
@@ -45,21 +45,6 @@ class MenuItems2TableSeeder extends Seeder
                 'color'      => null,
                 'parent_id'  => $locationMenuItem->id,
                 'order'      => 16,
-            ])->save();
-        }
-        $menuItem = MenuItem::firstOrNew([
-            'menu_id' => $menu->id,
-            'title'   => __('voyager::seeders.menu_items.cities'),
-            'url'     => '',
-            'route'   => 'voyager.cities.index',
-        ]);
-        if (!$menuItem->exists) {
-            $menuItem->fill([
-                'target'     => '_self',
-                'icon_class' => 'voyager-data',
-                'color'      => null,
-                'parent_id'  => $locationMenuItem->id,
-                'order'      => 17,
             ])->save();
         }
 

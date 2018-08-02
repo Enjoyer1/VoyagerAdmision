@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCareersTable extends Migration
+class CreateCiudadesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateCareersTable extends Migration
      */
     public function up()
     {
-        Schema::create('careers', function (Blueprint $table) {
+        Schema::create('ciudades', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('id_carrera')->unique();
-            $table->string('name')->unique();
-            $table->timestamps();
+            $table->string('nombre','75')->unique();
+            $table->string('nombre_region')->default('Maule');
+
         });
     }
 
@@ -28,6 +28,6 @@ class CreateCareersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('careers');
+        Schema::dropIfExists('ciudades');
     }
 }

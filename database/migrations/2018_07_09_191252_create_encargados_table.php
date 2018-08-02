@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateManagersTable extends Migration
+class CreateEncargadosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,18 @@ class CreateManagersTable extends Migration
      */
     public function up()
     {
-        Schema::create('managers', function (Blueprint $table) {
+        Schema::create('encargados', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('lastname1');
-            $table->string('lastname2')->nullable();
+            $table->string('nombre');
+            $table->string('apellido1');
+            $table->string('apellido2')->nullable();
             $table->string('cargo')->nullable();
             $table->string('email')->unique();
-            $table->string('phone')->unique();
+            $table->string('celular')->unique();
 
-            $table->integer('school_id')->unsigned()->nullable();
-            $table->foreign('school_id')->references('id')
-                ->on('schools')
+            $table->integer('colegio_id')->unsigned()->nullable();
+            $table->foreign('colegio_id')->references('id')
+                ->on('colegios')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->timestamps();
@@ -38,6 +38,6 @@ class CreateManagersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('managers');
+        Schema::dropIfExists('encargados');
     }
 }

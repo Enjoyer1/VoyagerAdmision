@@ -25,9 +25,8 @@ class Permissions2TableSeeder extends Seeder
             ]);
         }
 
-        Permission::generateFor('regions');
 
-        Permission::generateFor('cities');
+        Permission::generateFor('ciudades');
 
 
     }

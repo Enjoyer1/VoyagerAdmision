@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInternshipsTable extends Migration
+class CreatePasantiasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,16 @@ class CreateInternshipsTable extends Migration
      */
     public function up()
     {
-        Schema::create('internships', function (Blueprint $table) {
+        Schema::create('pasantias', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->date('date')->nullable();
+            $table->string('nombre');
+            $table->date('fecha')->nullable();
+            $table->unsignedInteger('cupos');
+            $table->string('campus');
 
-            $table->integer('career_id')->unsigned()->nullable();
-            $table->foreign('career_id')->references('id')->on('careers')->onDelete('cascade');
+            $table->integer('carrera_id')->unsigned()->nullable();
+            $table->foreign('carrera_id')->references('id')->on('carreras')->onDelete('set null');
+
             $table->timestamps();
         });
     }

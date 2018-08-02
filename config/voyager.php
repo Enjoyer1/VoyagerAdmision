@@ -168,7 +168,6 @@ return [
             'TCG\\Voyager\\Widgets\\UserDimmer',
             'TCG\\Voyager\\Widgets\\PostDimmer',
             'TCG\\Voyager\\Widgets\\PageDimmer',
-            'App\\Widgets\\RegionDimmer',
 
 
 
@@ -209,7 +208,7 @@ return [
     |
     */
 
-    'primary_color' => '#22A7F0',
+    'primary_color' => '#8E1814',
 
     'show_dev_tips' => false, // Show development tip "How To Use:" in Menu and Settings
 
