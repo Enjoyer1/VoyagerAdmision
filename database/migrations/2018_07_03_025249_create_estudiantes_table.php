@@ -25,9 +25,7 @@ class CreateEstudiantesTable extends Migration
 
             $table->integer('curso_id')->unsigned()->nullable();
             $table->foreign('curso_id')->references('id')->on('cursos')->onDelete('cascade');
-
-            $table->enum('nivel',['Básica Completa', 'Media Completa', 'Media Incompleta']);
-
+            
             $table->integer('colegio_id')->unsigned()->nullable();
             $table->foreign('colegio_id')->references('id')->on('colegios')->onDelete('cascade');
 

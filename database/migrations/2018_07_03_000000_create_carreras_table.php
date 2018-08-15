@@ -17,6 +17,7 @@ class CreateCarrerasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('id_carrera')->unique();
             $table->string('nombre')->unique();
+            $table->string('correo_encargado')->unique();
 
             $table->timestamps();
         });

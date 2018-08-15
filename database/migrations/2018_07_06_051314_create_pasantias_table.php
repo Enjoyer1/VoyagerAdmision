@@ -18,7 +18,7 @@ class CreatePasantiasTable extends Migration
             $table->string('nombre');
             $table->date('fecha')->nullable();
             $table->unsignedInteger('cupos');
-            $table->string('campus');
+            $table->enum('campus',['Talca','Curicó','Santiago']);
 
             $table->integer('carrera_id')->unsigned()->nullable();
             $table->foreign('carrera_id')->references('id')->on('carreras')->onDelete('set null');

@@ -9,5 +9,5 @@ class Programa extends Model
 {
 
 
-    public $timestamps = false;
+
 }

@@ -8,9 +8,6 @@ use TCG\Voyager\Models\Menu;
 use TCG\Voyager\Models\MenuItem;
 use TCG\Voyager\Models\Permission;
 use App\Ciudad;
-
-
-
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 
@@ -24,7 +21,13 @@ class CiudadesTableSeeder extends Seeder
     public function run()
     {
 
-        //datatype seeder
+        /*
+      |--------------------------------------------------------------------------
+      | Ciudades
+      |--------------------------------------------------------------------------
+      */
+
+        //dataty seeeder
         $dataType = $this->dataType('slug', 'ciudades');
         if (!$dataType->exists) {
             $dataType->fill([
@@ -89,6 +92,7 @@ class CiudadesTableSeeder extends Seeder
                 'order' => 3,
             ])->save();
         }
+
 
         $menu = Menu::where('name', 'admin')->firstOrFail();
 
