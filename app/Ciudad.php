@@ -10,5 +10,9 @@ class Ciudad extends Model
 
     public $timestamps = false;
 
+    public function colegio()
+    {
+        return $this->hasMany('App\Colegio');
+    }
 
 }

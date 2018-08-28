@@ -94,6 +94,7 @@ class CiudadesTableSeeder extends Seeder
         }
 
 
+
         $menu = Menu::where('name', 'admin')->firstOrFail();
 
         $locationMenuItem = MenuItem::firstOrNew([

@@ -22,7 +22,7 @@ class CreatePreferenciasTable extends Migration
             $table->integer('carrera_id')->unsigned()->nullable();
             $table->foreign('carrera_id')->references('id')->on('carreras')->onDelete('cascade');
 
-            $table->integer('posición')->unsigned();
+            $table->integer('posicion')->unsigned();
 
             $table->timestamps();
         });
