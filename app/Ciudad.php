@@ -10,7 +10,10 @@ class Ciudad extends Model
 
     public $timestamps = false;
 
-    public function colegio()
+    protected $fillable = ['nombre','nombre_region'];
+
+
+    public function colegios()
     {
         return $this->hasMany('App\Colegio');
     }

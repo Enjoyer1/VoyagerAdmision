@@ -69,7 +69,7 @@ class ProgramasTableSeeder extends Seeder
                 'order' => 2,
             ])->save();
         }
-        $dataRow = $this->dataRow($programaDataType, 'descripción');
+        $dataRow = $this->dataRow($programaDataType, 'descripcion');
         if (!$dataRow->exists) {
             $dataRow->fill([
                 'type' => 'text_area',
@@ -145,7 +145,7 @@ class ProgramasTableSeeder extends Seeder
         foreach (range(1, 10) as $index) {
             Programa::create([
                 'nombre' => $faker->jobTitle,
-                'descripción' => $faker->text,
+                'descripcion' => $faker->text,
 
             ]);
         }

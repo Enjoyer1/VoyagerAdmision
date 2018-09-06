@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProgramasColegiosTable extends Migration
+class CreateColegioProgramaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateProgramasColegiosTable extends Migration
      */
     public function up()
     {
-        Schema::create('programas_colegios', function (Blueprint $table) {
+        Schema::create('colegio_programa', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('programa_id')->unsigned()->nullable();
@@ -38,6 +38,6 @@ class CreateProgramasColegiosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('programas_colegios');
+        Schema::dropIfExists('colegio_programa');
     }
 }
