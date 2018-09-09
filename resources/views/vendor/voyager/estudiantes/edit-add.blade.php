@@ -82,13 +82,11 @@
 
                         <!-- Nuevos Campos relaciones estudiante->carrera -->
 
-
-
                             @if( $preferencias->isEmpty())
-                                @for($x=0;$x<3;$x++)
+                                @for($x=1;$x<=3;$x++)
                                     <div class="form-group  col-md-12">
 
-                                        <label for="name">Carrera 1</label>
+                                        <label for="name">Preferencia {{$x}}</label>
 
                                         <select class="form-control select2 select2-hidden-accessible"
                                                 name="preferencia[]"
@@ -102,11 +100,12 @@
                                     </div>
                                 @endfor
                             @else
+                                @php $x=1; @endphp
                                 @foreach($preferencias as $preferencia)
 
                                     <div class="form-group  col-md-12">
 
-                                        <label for="name">Carrera 1</label>
+                                        <label for="name">Preferencia {{$x}}</label>
 
                                         <select class="form-control select2 select2-hidden-accessible"
                                                 name="preferencia[]"
@@ -118,6 +117,7 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                        @php $x++; @endphp
                                 @endforeach
                             @endif
 

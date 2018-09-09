@@ -48,31 +48,24 @@
                         <!-- Adding / Editing -->
                             @php
                                 $dataTypeRows = $dataType->{(!is_null($dataTypeContent->getKey()) ? 'editRows' : 'addRows' )};
-
                             @endphp
 
                             @foreach($dataTypeRows as $row)
-
                             <!-- GET THE DISPLAY OPTIONS -->
                                 @php
                                     $options = json_decode($row->details);
                                     $display_options = isset($options->display) ? $options->display : NULL;
-
                                 @endphp
-
                                 @if ($options && isset($options->legend) && isset($options->legend->text))
                                     <legend class="text-{{$options->legend->align or 'center'}}"
                                             style="background-color: {{$options->legend->bgcolor or '#f0f0f0'}};padding: 5px;">{{$options->legend->text}}</legend>
                                 @endif
                                 @if ($options && isset($options->formfields_custom))
-
                                     @include('voyager::formfields.custom.' . $options->formfields_custom)
                                 @else
-
                                     <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width or 12 }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
                                         {{ $row->slugify }}
                                         <label for="name">{{ $row->display_name }}</label>
-
                                         @include('voyager::multilingual.input-hidden-bread-edit-add')
                                         @if($row->type == 'relationship')
                                             @include('voyager::formfields.relationship')
@@ -87,48 +80,45 @@
                                 @endif
                             @endforeach
 
-
                         <!-- Adding / Editing -->
+
+                            <h1 class="page-title">
+                                {{'Programas Vinculados'}}
+                            </h1>
                             @php
-                                $dataTypeRows2 = $dataType2->{(!is_null($dataTypeContent2->getKey()) ? 'editRows' : 'addRows' )};
+                                $dataTypeRows = $dataTypeColegioPrograma->{(!is_null($dataTypeContentColegioPrograma->getKey()) ? 'editRows' : 'addRows' )};
 
                             @endphp
-                            @foreach($programasForColegio as $programa)
-                                @foreach($dataTypeRows2 as $row2)
 
-                                <!-- GET THE DISPLAY OPTIONS -->
-                                    @php
-                                        $options2 = json_decode($row2->details);
-                                        $display_option2 = isset($options2->display) ? $options2->display : NULL;
 
-                                    @endphp
+                            @foreach($dataTypeRows as $row)
+                            <!-- GET THE DISPLAY OPTIONS -->
+                                @php
+                                    $options = json_decode($row->details);
+                                    $display_options = isset($options->display) ? $options->display : NULL;
+                                @endphp
+                                @if ($options && isset($options->legend) && isset($options->legend->text))
+                                    <legend class="text-{{$options->legend->align or 'center'}}"
+                                            style="background-color: {{$options->legend->bgcolor or '#f0f0f0'}};padding: 5px;">{{$options->legend->text}}</legend>
+                                @endif
+                                @if ($options && isset($options->formfields_custom))
+                                    @include('voyager::formfields.custom.' . $options->formfields_custom)
+                                @else
+                                    <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width or 12 }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                        {{ $row->slugify }}
+                                        <label for="name">{{ $row->display_name }}</label>
+                                        @include('voyager::multilingual.input-hidden-bread-edit-add')
+                                        @if($row->type == 'relationship')
+                                            @include('voyager::formfields.relationship')
+                                        @else
+                                            {!! app('voyager')->formField($row, $dataTypeColegioPrograma, $dataTypeContentColegioPrograma) !!}
+                                        @endif
 
-                                    @if ($options2 && isset($options2->legend) && isset($options2->legend->text))
-                                        <legend class="text-{{$options2->legend->align or 'center'}}"
-                                                style="background-color: {{$options->legend->bgcolor or '#f0f0f0'}};padding: 5px;">{{$options2->legend->text}}</legend>
-                                    @endif
-                                    @if ($options2 && isset($options2->formfields_custom))
-
-                                        @include('voyager::formfields.custom.' . $options2->formfields_custom)
-                                    @else
-
-                                        <div class="form-group @if($row2->type == 'hidden') hidden @endif col-md-{{ $display_options2->width or 12 }}" @if(isset($display_options2->id)){{ "id=$display_options2->id" }}@endif>
-                                            {{ $row2->slugify }}
-                                            <label for="name">{{ $row2->display_name }}</label>
-
-                                            @include('voyager::multilingual.input-hidden-bread-edit-add')
-                                            @if($row2->type == 'relationship')
-                                                @include('voyager::formfields.relationship')
-                                            @else
-                                                {!! app('voyager')->formField($row2, $dataType2, $dataTypeContent2) !!}
-                                            @endif
-
-                                            @foreach (app('voyager')->afterFormFields($row2, $dataType2, $dataTypeContent2) as $after)
-                                                {!! $after->handle($row2, $dataType2, $dataTypeContent2) !!}
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                @endforeach
+                                        @foreach (app('voyager')->afterFormFields($row, $dataTypeColegioPrograma, $dataTypeContentColegioPrograma) as $after)
+                                            {!! $after->handle($row, $dataTypeColegioPrograma, $dataTypeContentColegioPrograma) !!}
+                                        @endforeach
+                                    </div>
+                                @endif
                             @endforeach
 
 

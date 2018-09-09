@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Voyager;
 
-use App\Colegio;
 use App\ColegioPrograma;
+use App\Colegio;
 use App\Programa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +19,7 @@ use TCG\Voyager\Http\Controllers\VoyagerBaseController;
 class ColegiosController extends VoyagerBaseController
 {
     use BreadRelationshipParser;
+
     //***************************************
     //               ____
     //              |  _ \
@@ -44,7 +45,7 @@ class ColegiosController extends VoyagerBaseController
 
         $getter = $dataType->server_side ? 'paginate' : 'get';
 
-        $search = (object) ['value' => $request->get('s'), 'key' => $request->get('key'), 'filter' => $request->get('filter')];
+        $search = (object)['value' => $request->get('s'), 'key' => $request->get('key'), 'filter' => $request->get('filter')];
         $searchable = $dataType->server_side ? array_keys(SchemaManager::describeTable(app($dataType->model_name)->getTable())->toArray()) : '';
         $orderBy = $request->get('order_by');
         $sortOrder = $request->get('sort_order', null);
@@ -61,7 +62,7 @@ class ColegiosController extends VoyagerBaseController
 
             if ($search->value && $search->key && $search->filter) {
                 $search_filter = ($search->filter == 'equals') ? '=' : 'LIKE';
-                $search_value = ($search->filter == 'equals') ? $search->value : '%'.$search->value.'%';
+                $search_value = ($search->filter == 'equals') ? $search->value : '%' . $search->value . '%';
                 $query->where($search->key, $search_filter, $search_value);
             }
 
@@ -179,6 +180,7 @@ class ColegiosController extends VoyagerBaseController
 
         $relationships = $this->getRelationships($dataType);
 
+
         $dataTypeContent = (strlen($dataType->model_name) != 0)
             ? app($dataType->model_name)->with($relationships)->findOrFail($id)
             : DB::table($dataType->name)->where('id', $id)->first(); // If Model doest exist, get data from table name
@@ -186,6 +188,19 @@ class ColegiosController extends VoyagerBaseController
         foreach ($dataType->editRows as $key => $row) {
             $details = json_decode($row->details);
             $dataType->editRows[$key]['col_width'] = isset($details->width) ? $details->width : 100;
+        }
+        //Datatype colegio_programa
+
+        $dataTypeColegioPrograma = Voyager::model('DataType')->where('slug', '=', 'colegio-programa')->first();
+
+
+        $dataTypeContentColegioPrograma = (strlen('App\ColegioPrograma') != 0)
+            ? app('App\ColegioPrograma')->where('colegio_id', $id)->first()
+            : DB::table($dataType->name)->where('colegio_id', $id)->first();
+
+        foreach ($dataTypeColegioPrograma->editRows as $key => $row) {
+            $details = json_decode($row->details);
+            $dataTypeColegioPrograma->editRows[$key]['col_width'] = isset($details->width) ? $details->width : 100;
         }
 
         // If a column has a relationship associated with it, we do not want to show that field
@@ -197,42 +212,15 @@ class ColegiosController extends VoyagerBaseController
         // Check if BREAD is Translatable
         $isModelTranslatable = is_bread_translatable($dataTypeContent);
 
+
         $view = 'voyager::bread.edit-add';
+        $all = ColegioPrograma::all();
 
         if (view()->exists("voyager::$slug.edit-add")) {
             $view = "voyager::$slug.edit-add";
         }
 
-        $allProgramas=Programa::all();
-        $colegio = Colegio::find($id);
-        $programasForColegio = $colegio->programas()->get();
-
-
-
-        //neww try//////////////////////////////////
-
-
-
-        $slug2 = 'colegio-programa';
-        $dataType2 = Voyager::model('DataType')->where('slug', '=', $slug2)->first();
-
-        $relationships2 = $this->getRelationships($dataType2);
-
-        $dataTypeContent2 = (strlen($dataType2->model_name) != 0)
-            ? app($dataType2->model_name)->with($relationships2)->findOrFail($id)
-            : DB::table($dataType2->name)->where('colegio_id', $id)->take(1)->get(); // If Model doest exist, get data from table name
-
-        foreach ($dataType2->editRows as $key => $row) {
-            $details = json_decode($row->details);
-            $dataType2->editRows[$key]['col_width'] = isset($details->width) ? $details->width : 100;
-        }
-
-        ///
-dd($dataTypeContent2);
-
-
-      //  return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','allProgramas','programasForColegio','colegio'));
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','dataType2','dataTypeContent2','programasForColegio'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'all','dataTypeContentColegioPrograma','dataTypeColegioPrograma'));
     }
 
     // POST BR(E)AD
@@ -262,17 +250,10 @@ dd($dataTypeContent2);
 
             event(new BreadDataUpdated($dataType, $data));
 
-            ColegioPrograma::where('colegio_id', $id)->delete();
-
-            // Re-insert if there's at least one category checked
-
-            $this->updateColegioPrograma($request,$id);
-
-
             return redirect()
                 ->route("voyager.{$dataType->slug}.index")
                 ->with([
-                    'message'    => __('voyager::generic.successfully_updated')." {$dataType->display_name_singular}",
+                    'message' => __('voyager::generic.successfully_updated') . " {$dataType->display_name_singular}",
                     'alert-type' => 'success',
                 ]);
         }
@@ -359,7 +340,7 @@ dd($dataTypeContent2);
             return redirect()
                 ->route("voyager.{$dataType->slug}.index")
                 ->with([
-                    'message'    => __('voyager::generic.successfully_added_new')." {$dataType->display_name_singular}",
+                    'message' => __('voyager::generic.successfully_added_new') . " {$dataType->display_name_singular}",
                     'alert-type' => 'success',
                 ]);
         }
@@ -386,6 +367,8 @@ dd($dataTypeContent2);
         // Check permission
         $this->authorize('delete', app($dataType->model_name));
 
+
+        dd($id);
         // Init array of IDs
         $ids = [];
         if (empty($id)) {
@@ -405,11 +388,11 @@ dd($dataTypeContent2);
         $res = $data->destroy($ids);
         $data = $res
             ? [
-                'message'    => __('voyager::generic.successfully_deleted')." {$displayName}",
+                'message' => __('voyager::generic.successfully_deleted') . " {$displayName}",
                 'alert-type' => 'success',
             ]
             : [
-                'message'    => __('voyager::generic.error_deleting')." {$displayName}",
+                'message' => __('voyager::generic.error_deleting') . " {$displayName}",
                 'alert-type' => 'error',
             ];
 
@@ -466,13 +449,13 @@ dd($dataTypeContent2);
             if (isset($options->thumbnails)) {
                 foreach ($options->thumbnails as $thumbnail) {
                     $ext = explode('.', $data->{$row->field});
-                    $extension = '.'.$ext[count($ext) - 1];
+                    $extension = '.' . $ext[count($ext) - 1];
 
                     $path = str_replace($extension, '', $data->{$row->field});
 
                     $thumb_name = $thumbnail->name;
 
-                    $this->deleteFileIfExists($path.'-'.$thumb_name.$extension);
+                    $this->deleteFileIfExists($path . '-' . $thumb_name . $extension);
                 }
             }
         }
@@ -502,7 +485,7 @@ dd($dataTypeContent2);
             return redirect()
                 ->route("voyager.{$dataType->slug}.index")
                 ->with([
-                    'message'    => __('voyager::bread.ordering_not_set'),
+                    'message' => __('voyager::bread.ordering_not_set'),
                     'alert-type' => 'error',
                 ]);
         }
@@ -542,21 +525,6 @@ dd($dataTypeContent2);
             $i = $model->findOrFail($item->id);
             $i->$column = ($key + 1);
             $i->save();
-        }
-    }
-
-    protected function updateColegioPrograma(Request $request, $id)
-    {
-        if ($request->programa) {
-            foreach ($request->programa as $i=>$programa) {
-                ColegioPrograma::create([
-                    'colegio_id' => $id,
-                    'programa_id' => $programa,
-                    'file'=>$request->file,
-                    'fecha_inicio'=>$request->fecha_inicio[$i],
-
-                ]);
-            }
         }
     }
 }

@@ -20,7 +20,7 @@ class CreateColegiosTable extends Migration
                 $table->string('celular','20')->nullable();
                 $table->string('direccion')->nullable();
                 $table->integer('ciudad_id')->unsigned()->nullable();
-                $table->foreign('ciudad_id')->references('id')->on('ciudades')->onDelete('cascade');
+                $table->foreign('ciudad_id')->references('id')->on('ciudades')->onDelete('restrict');
                 $table->timestamps();
         });
     }

@@ -164,14 +164,16 @@ class EstudiantesController extends VoyagerBaseController
         $relationships2 = $this->getRelationships($dataType2);
         $preferencia = Preferencia::all()->where('estudiante_id',$id)->take(3);
 
-        $array=[];
+        $idPreferencia=[];
         foreach ($preferencia as $val){
-            $array[]=$val->id;
+            $idPreferencia[]=$val->id;
+
         }
+        $allCarrera=Carrera::all();
 
         if (strlen($dataType2->model_name) != 0) {
             $model2 = app($dataType2->model_name);
-            $dataTypeContent2 = call_user_func([$model2->with($relationships2), 'findOrFail'], $array[0]);
+            $dataTypeContent2 = call_user_func([$model2->with($relationships2), 'findOrFail'], $idPreferencia[0]);
         } else {
             $dataTypeContent2 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
         }
@@ -180,12 +182,14 @@ class EstudiantesController extends VoyagerBaseController
         // Check if BREAD is Translatable
         $isModelTranslatable2 = is_bread_translatable($dataTypeContent2);
 
+
+
         ////////////////
         /// //////////  Preferencia 2 Mostrar
         /// ///////
         if (strlen($dataType2->model_name) != 0) {
             $model2 = app($dataType2->model_name);
-            $dataTypeContent3 = call_user_func([$model2->with($relationships2), 'findOrFail'], $array[1]);
+            $dataTypeContent3 = call_user_func([$model2->with($relationships2), 'findOrFail'], $idPreferencia[1]);
         } else {
             $dataTypeContent3 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
         }
@@ -196,12 +200,12 @@ class EstudiantesController extends VoyagerBaseController
         /// ///////
         if (strlen($dataType2->model_name) != 0) {
             $model2 = app($dataType2->model_name);
-            $dataTypeContent4 = call_user_func([$model2->with($relationships2), 'findOrFail'], $array[2]);
+            $dataTypeContent4 = call_user_func([$model2->with($relationships2), 'findOrFail'], $idPreferencia[2]);
         } else {
             $dataTypeContent4 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
         }
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','dataType2','dataTypeContent2','dataTypeContent3','dataTypeContent4','isModelTranslatable2'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent','allCarrera', 'isModelTranslatable','dataType2','dataTypeContent2','dataTypeContent3','dataTypeContent4','isModelTranslatable2'));
     }
 
     //***************************************
