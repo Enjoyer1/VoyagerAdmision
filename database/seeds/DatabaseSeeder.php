@@ -15,6 +15,11 @@ class DatabaseSeeder extends Seeder
         $this->call(VoyagerDummyDatabaseSeeder::class);
         $this->call(CiudadesTableSeeder::class);
         $this->call(ProgramasTableSeeder::class);
+        $this->call(ColegiosTableSeeder::class);
+        $this->call(CursosTableSeeder::class);
+        $this->call(CarrerasTableSeeder::class);
+        $this->call(EstudiantesTableSeeder::class);
+        $this->call(PreferenciasTableSeeder::class);
         $this->call(PermissionRoleTableSeeder::class);
 
 

@@ -167,6 +167,7 @@ class DataRowsTableSeeder extends Seeder
                 'required'     => 0,
                 'browse'       => 1,
                 'read'         => 1,
+                'read'         => 1,
                 'edit'         => 1,
                 'add'          => 1,
                 'delete'       => 0,

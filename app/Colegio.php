@@ -21,6 +21,6 @@ class Colegio extends Model
     }
     public function programas()
     {
-        return $this->belongsToMany('App\Programa')->withPivot('file','fecha_inicio');;
+        return $this->belongsToMany('App\Programa')->withPivot('file','fecha_inicio')->withTimestamps();
     }
 }

@@ -183,6 +183,8 @@
                                                 @endif
                                             </td>
                                         @endforeach
+
+
                                         <td class="no-sort no-click" id="bread-actions">
                                             @foreach(Voyager::actions() as $action)
                                                 @include('voyager::bread.partials.actions', ['action' => $action])

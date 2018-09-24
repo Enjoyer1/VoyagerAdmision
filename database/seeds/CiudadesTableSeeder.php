@@ -49,7 +49,7 @@ class CiudadesTableSeeder extends Seeder
         $dataRow = $this->dataRow($ciudadDataType, 'id');
         if (!$dataRow->exists) {
             $dataRow->fill([
-                'type' => 'number',
+                'type' => 'hidden',
                 'display_name' => 'ID',
                 'required' => 1,
                 'browse' => 0,
@@ -92,7 +92,21 @@ class CiudadesTableSeeder extends Seeder
                 'order' => 3,
             ])->save();
         }
-
+        $dataRow = $this->dataRow($ciudadDataType, 'ciudad_hasmany_colegio_relationship');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type' => 'relationship',
+                'display_name' => 'Colegios',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 0,
+                'details' => '{"model":"App\\\Colegio","table":"colegios","type":"hasMany","column":"ciudad_id","key":"id","label":"nombre","pivot_table":"colegios","pivot":"0"}',
+                'order' => 4,
+            ])->save();
+        }
 
 
         $menu = Menu::where('name', 'admin')->firstOrFail();
@@ -139,11 +153,8 @@ class CiudadesTableSeeder extends Seeder
             DB::table('ciudades')->insert([
                 'nombre' => $faker->city,
                 'nombre_region' => $faker->country,
-
             ]);
         }
-
-
     }
 
     //datatypeseed
@@ -160,7 +171,5 @@ class CiudadesTableSeeder extends Seeder
             'field' => $field,
         ]);
     }
-
-
 
 }

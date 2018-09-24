@@ -115,7 +115,24 @@ class ProgramasTableSeeder extends Seeder
                 'order'        => 5,
             ])->save();
         }
+/*
+        $dataRow = $this->dataRow($programaDataType, 'programa_belongstomany_colegio_relationship');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'relationship',
+                'display_name' => 'Programas',
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 0,
+                'details'      => '{"model":App\\\Colegio","table":"colegios","type":"belongsToMany","column":"id","key":"id","label":"nombre","pivot_table":"colegio_programa","pivot":"1","taggable":"0"}',
+                'order'        => 6,
+            ])->save();
+        }
 
+*/
         //Menu Item
         $menu = Menu::where('name', 'admin')->firstOrFail();
         $menuItem = MenuItem::firstOrNew([

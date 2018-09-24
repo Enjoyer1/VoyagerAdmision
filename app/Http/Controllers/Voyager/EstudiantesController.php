@@ -99,6 +99,11 @@ class EstudiantesController extends VoyagerBaseController
         if (view()->exists("voyager::$slug.browse")) {
             $view = "voyager::$slug.browse";
         }
+        ///nombres por carreras a mostrar
+
+        $carreras_id = Preferencia::orderBy('id','desc')->where('posicion', 1)->pluck('carrera_id')->all();
+        $carreras=Carrera::all()->pluck('id','nombre');
+
 
         return Voyager::view($view, compact(
             'dataType',
@@ -108,7 +113,9 @@ class EstudiantesController extends VoyagerBaseController
             'orderBy',
             'sortOrder',
             'searchable',
-            'isServerSide'
+            'isServerSide',
+            'carreras_id',
+            'carreras'
         ));
     }
 
@@ -160,20 +167,23 @@ class EstudiantesController extends VoyagerBaseController
         ///
         ///
         $slug2 = 'preferencias';
+
         $dataType2 = Voyager::model('DataType')->where('slug', '=', $slug2)->first();
         $relationships2 = $this->getRelationships($dataType2);
-        $preferencia = Preferencia::all()->where('estudiante_id',$id)->take(3);
+        $preferencia = Preferencia::all()->where('estudiante_id', $id)->take(3);
 
-        $idPreferencia=[];
-        foreach ($preferencia as $val){
-            $idPreferencia[]=$val->id;
+        $idPreferencia = [];
+        foreach ($preferencia as $val) {
+            $idPreferencia[] = $val->id;
 
         }
-        $allCarrera=Carrera::all();
+        $allCarrera = Carrera::all();
 
         if (strlen($dataType2->model_name) != 0) {
             $model2 = app($dataType2->model_name);
+
             $dataTypeContent2 = call_user_func([$model2->with($relationships2), 'findOrFail'], $idPreferencia[0]);
+
         } else {
             $dataTypeContent2 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
         }
@@ -181,7 +191,6 @@ class EstudiantesController extends VoyagerBaseController
         $this->authorize('read', $dataTypeContent2);
         // Check if BREAD is Translatable
         $isModelTranslatable2 = is_bread_translatable($dataTypeContent2);
-
 
 
         ////////////////
@@ -205,7 +214,7 @@ class EstudiantesController extends VoyagerBaseController
             $dataTypeContent4 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
         }
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent','allCarrera', 'isModelTranslatable','dataType2','dataTypeContent2','dataTypeContent3','dataTypeContent4','isModelTranslatable2'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'allCarrera', 'isModelTranslatable', 'dataType2', 'dataTypeContent2', 'dataTypeContent3', 'dataTypeContent4', 'isModelTranslatable2'));
     }
 
     //***************************************
@@ -254,12 +263,10 @@ class EstudiantesController extends VoyagerBaseController
 
         $allCarreras = Carrera::all();
         $estudiante = Estudiante::find($id);
-        $preferencias=Preferencia::all()->where('estudiante_id',$id)->take(3);
+        $preferencias = Preferencia::all()->where('estudiante_id', $id)->take(3);
 
 
-
-
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'preferencias', 'estudiante', 'allCarreras','preferencias'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'preferencias', 'estudiante', 'allCarreras', 'preferencias'));
     }
 
     // POST BR(E)AD
@@ -290,16 +297,15 @@ class EstudiantesController extends VoyagerBaseController
             event(new BreadDataUpdated($dataType, $data));
 
 
+            $preferencia = Preferencia::all()->where('estudiante_id', $id)->take(3);
 
-            $preferencia = Preferencia::all()->where('estudiante_id',$id)->take(3);
-
-            $array=[];
-            foreach ($preferencia as $val){
-                $array[]=$val->id;
+            $array = [];
+            foreach ($preferencia as $val) {
+                $array[] = $val->id;
             }
 
             if ($request->preferencia) {
-                $x=0;
+                $x = 0;
                 foreach ($request->preferencia as $preferencia) {
 
                     $pref = Preferencia::find($array[$x]);
@@ -404,7 +410,7 @@ class EstudiantesController extends VoyagerBaseController
             //add new preferencias
 
             if ($request->preferencia) {
-                $posicion=1;
+                $posicion = 1;
                 foreach ($request->preferencia as $preferencia) {
                     Preferencia::create([
                         'estudiante_id' => $data->id,

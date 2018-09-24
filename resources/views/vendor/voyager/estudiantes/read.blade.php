@@ -153,11 +153,13 @@
                                         @include('voyager::multilingual.input-hidden-bread-read')
                                         @if ($row->display_name == 'Carrera')
                                             @foreach($allCarrera as $carrera)
-                                                @if($carrera->id_carrera == $dataTypeContent2->{$row->field})
-                                                    {{$carrera->nombre}}
+                                                @if($carrera->id == $dataTypeContent2->{$row->field})
+                                                    <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
+                                                        {{$carrera->nombre}}
+                                                    </a>
                                                 @endif
                                             @endforeach
-                                            @if(!$allCarrera->contains('id_carrera',$dataTypeContent2->{$row->field}))
+                                            @if(!$allCarrera->contains('id',$dataTypeContent2->{$row->field}))
                                                 {{'No posee'}}
                                             @endif
                                         @else
@@ -191,13 +193,15 @@
                                 <div class="panel-body" style="padding-top:0;">
                                     @if($row->type != "image")
                                         @include('voyager::multilingual.input-hidden-bread-read')
-                                        @if ($row->display_name == 'Carrera')
+                                        @if ($row->display_name == 'Carrera' or $row->display_name == 'Carrera id')
                                             @foreach($allCarrera as $carrera)
-                                                @if($carrera->id_carrera == $dataTypeContent3->{$row->field})
-                                                    {{$carrera->nombre}}
+                                                @if($carrera->id == $dataTypeContent3->{$row->field})
+                                                    <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
+                                                        {{$carrera->nombre}}
+                                                    </a>
                                                 @endif
                                             @endforeach
-                                            @if(!$allCarrera->contains('id_carrera',$dataTypeContent3->{$row->field}))
+                                            @if(!$allCarrera->contains('id',$dataTypeContent3->{$row->field}))
                                                 {{'No posee'}}
                                             @endif
                                         @else
@@ -233,11 +237,13 @@
 
                                         @if ($row->display_name == 'Carrera')
                                             @foreach($allCarrera as $carrera)
-                                                @if($carrera->id_carrera == $dataTypeContent4->{$row->field})
-                                                    {{$carrera->nombre}}
+                                                @if($carrera->id == $dataTypeContent4->{$row->field})
+                                                    <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
+                                                        {{$carrera->nombre}}
+                                                    </a>
                                                 @endif
                                             @endforeach
-                                            @if(!$allCarrera->contains('id_carrera',$dataTypeContent4->{$row->field}))
+                                            @if(!$allCarrera->contains('id',$dataTypeContent4->{$row->field}))
                                                 {{'No posee'}}
                                             @endif
                                         @else
