@@ -139,7 +139,22 @@ class CarrerasTableSeeder extends Seeder
                     'order' => 6,
                 ])->save();
             }
-
+        $dataRow = $this->dataRow($carreraDataType, 'carrera_belongstomany_estudiante_relationship');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'relationship',
+                'display_name' => 'Estudiantes',
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 0,
+                'details'      => '{"model":"App\\\Estudiante","table":"estudiantes","type":"belongsToMany","column":"id","key":"id","label":"nombre","pivot_table":"preferencias","pivot":"1","taggable":"0"}',
+                'order'        => 7,
+            ])->save();
+        }
 
 
             //Menu Item
@@ -167,7 +182,7 @@ class CarrerasTableSeeder extends Seeder
             $faker = Faker::create();
             foreach (range(1, 20) as $index) {
                 Carrera::create([
-                    'id_carrera' => $faker->numberBetween((100), (100000)),
+                    'id_carrera' => $faker->unique()->numberBetween((100), (100000)),
                     'nombre' => $faker->unique()->domainName,
                     'correo_encargado' => $faker->email,
                     'created_at'=>'2018-09-19 19:48:10',

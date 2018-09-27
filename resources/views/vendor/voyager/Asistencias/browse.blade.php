@@ -43,7 +43,7 @@
                                     </select>
                                     <select id="filter" name="filter">
                                         <option value="contains" @if($search->filter == "contains"){{ 'selected' }}@endif>
-                                            contiene
+                                            Contiene
                                         </option>
                                         <option value="equals" @if($search->filter == "equals"){{ 'selected' }}@endif>
                                             =
@@ -73,7 +73,6 @@
                                     @endcan
                                     @foreach($dataType->browseRows as $row)
                                         <th>
-
                                             @if ($isServerSide)
                                                 <a href="{{ $row->sortByUrl() }}">
                                                     @endif
@@ -90,12 +89,6 @@
                                             @endif
                                         </th>
                                     @endforeach
-
-                                    <th>
-                                        {{ 'Preferencia'}}
-                                    </th>
-
-
                                     <th class="actions text-right">{{ __('voyager::generic.actions') }}</th>
                                 </tr>
                                 </thead>
@@ -202,26 +195,15 @@
                                                     <span>{{ $data->{$row->field} }}</span>
                                                 @endif
                                             </td>
-
-                                    @endforeach
-                                    <!-- Enlazar nombre de carreras al clickear --href-->
-                                        <td> @include('voyager::multilingual.input-hidden-bread-browse')
-                                            @if (isset($carreras_id[$data->id]))
-                                                @if($carreras->contains($carreras_id[$data->id]))
-                                                    <span>
-                                                          <a href="{{ route('voyager.'.'carreras'.'.show', $carreras_id[$data->id]) }}"> {{$carreras->search($carreras_id[$data->id])}}  </a>  </span>
-                                                @endif
-                                            @else
-                                                {{'No posee'}}
-                                            @endif
-                                        </td>
+                                        @endforeach
                                         <td class="no-sort no-click" id="bread-actions">
+
                                             @foreach(Voyager::actions() as $action)
                                                 @include('voyager::bread.partials.actions', ['action' => $action])
                                             @endforeach
+
                                         </td>
                                     </tr>
-
                                 @endforeach
                                 </tbody>
                             </table>

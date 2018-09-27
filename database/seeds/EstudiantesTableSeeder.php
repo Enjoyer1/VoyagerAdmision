@@ -122,11 +122,11 @@ class EstudiantesTableSeeder extends Seeder
                 'order' => 5,
             ])->save();
         }
-        $dataRow = $this->dataRow($estudianteDataType, 'RUN');
+        $dataRow = $this->dataRow($estudianteDataType, 'run');
         if (!$dataRow->exists) {
             $dataRow->fill([
                 'type' => 'text',
-                'display_name' => 'RUN',
+                'display_name' => 'run',
                 'required' => 0,
                 'browse' => 1,
                 'read' => 1,
@@ -262,8 +262,24 @@ class EstudiantesTableSeeder extends Seeder
                 'order' => 14,
             ])->save();
         }
-
-
+/*
+        $dataRow = $this->dataRow($estudianteDataType, 'estudiante_belongstomany_carrera_relationship');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'relationship',
+                'display_name' => 'Carreras',
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 0,
+                'details'      => '{"model":"App\\\Carrera","table":"carreras","type":"belongsToMany","column":"id","key":"id","label":"nombre","pivot_table":"preferencias","pivot":"1","taggable":"0"}',
+                'order'        => 15,
+            ])->save();
+        }
+*/
 
         //Menu Item
         $menu = Menu::where('name', 'admin')->firstOrFail();
@@ -294,7 +310,7 @@ class EstudiantesTableSeeder extends Seeder
                 'apellido1' => $faker->lastName,
                 'apellido2' => $faker->lastName,
                 'genero' => 'Masculino',
-                'RUN' => $faker->bankAccountNumber,
+                'run' => $faker->bankAccountNumber,
                 'email' => $faker->email,
                 'celular' => $faker->phoneNumber,
                 'curso_id' => $faker->numberBetween((1), (3)),
@@ -312,7 +328,7 @@ class EstudiantesTableSeeder extends Seeder
                 'apellido1' => $faker->lastName,
                 'apellido2' => $faker->lastName,
                 'genero' => 'Femenino',
-                'RUN' => $faker->bankAccountNumber,
+                'run' => $faker->bankAccountNumber,
                 'email' => $faker->unique()->email,
                 'celular' => $faker->phoneNumber,
                 'curso_id' => $faker->numberBetween((1), (3)),

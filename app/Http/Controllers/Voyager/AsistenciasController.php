@@ -16,7 +16,7 @@ use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use TCG\Voyager\Http\Controllers\VoyagerBaseController;
 
-class EstudiantesController extends VoyagerBaseController
+class AsistenciasController extends VoyagerBaseController
 {
     use BreadRelationshipParser;
 
@@ -102,9 +102,9 @@ class EstudiantesController extends VoyagerBaseController
         ///nombres por carreras a mostrar
 
         $carreras_id = Preferencia::orderBy('id','asc')
-                                    ->where('posicion', 1)
-                                    ->pluck('carrera_id','estudiante_id')
-                                    ->all();
+            ->where('posicion', 1)
+            ->pluck('carrera_id','estudiante_id')
+            ->all();
         $carreras=Carrera::all()->pluck('id','nombre');
 
 
@@ -310,11 +310,13 @@ class EstudiantesController extends VoyagerBaseController
             if ($request->preferencia) {
                 $x = 0;
                 foreach ($request->preferencia as $preferencia) {
+
                     $pref = Preferencia::find($array[$x]);
                     $pref->carrera_id = $preferencia;
                     $pref->save();
                     $x++;
                 }
+
             }
 
 

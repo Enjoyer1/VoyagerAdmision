@@ -115,12 +115,12 @@ class ProgramasTableSeeder extends Seeder
                 'order'        => 5,
             ])->save();
         }
-/*
+
         $dataRow = $this->dataRow($programaDataType, 'programa_belongstomany_colegio_relationship');
         if (!$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'relationship',
-                'display_name' => 'Programas',
+                'display_name' => 'Colegios',
                 'required'     => 0,
                 'browse'       => 1,
                 'read'         => 1,
@@ -132,7 +132,7 @@ class ProgramasTableSeeder extends Seeder
             ])->save();
         }
 
-*/
+
         //Menu Item
         $menu = Menu::where('name', 'admin')->firstOrFail();
         $menuItem = MenuItem::firstOrNew([

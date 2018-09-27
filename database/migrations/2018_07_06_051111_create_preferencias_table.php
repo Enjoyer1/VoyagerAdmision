@@ -20,7 +20,7 @@ class CreatePreferenciasTable extends Migration
             $table->foreign('estudiante_id')->references('id')->on('estudiantes')->onDelete('cascade');
 
             $table->integer('carrera_id')->unsigned()->nullable();
-            $table->foreign('carrera_id')->references('id')->on('carreras')->onDelete('cascade');
+            $table->foreign('carrera_id')->references('id')->on('carreras')->onDelete('set null');
 
             $table->integer('posicion')->unsigned();
 

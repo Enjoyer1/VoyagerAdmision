@@ -19,7 +19,7 @@ class CreateEstudiantesTable extends Migration
             $table->string('apellido1');
             $table->string('apellido2')->nullable();
             $table->enum('genero',['Femenino', 'Masculino', 'Otro']);
-            $table->string('RUN')->unique();
+            $table->string('run')->unique();
             $table->string('email')->unique();
             $table->string('celular')->unique();
 

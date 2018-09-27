@@ -15,7 +15,7 @@ class Pasantia extends Model
     }
     public function estudiantes()
     {
-        return  $this->belongsToMany('App\Estudiante','Asistencias');
+        return  $this->belongsToMany('App\Estudiante','Asistencias')->withTimestamps();
     }
 
 }

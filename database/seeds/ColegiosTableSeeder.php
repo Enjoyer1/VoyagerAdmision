@@ -38,7 +38,7 @@ class ColegiosTableSeeder extends Seeder
                 'controller' => '',
                 'generate_permissions' => 1,
                 'description' => 'Colegios de los Alumnos',
-                'server_side'           => 1,
+                'server_side' => 1,
             ])->save();
         }
 
@@ -185,41 +185,24 @@ class ColegiosTableSeeder extends Seeder
                 'order' => 9,
             ])->save();
         }
-        /*
-                $dataRow = $this->dataRow($colegioDataType, 'colegio_belongstomany_programa_relationship');
-                if (!$dataRow->exists) {
-                    $dataRow->fill([
-                        'type'         => 'relationship',
-                        'display_name' => 'Roles',
-                        'required'     => 0,
-                        'browse'       => 1,
-                        'read'         => 1,
-                        'edit'         => 1,
-                        'add'          => 1,
-                        'delete'       => 0,
-                        'details'      => '{"model":"App\Programa","table":"programas","type":"belongsToMany","column":"id","key":"id","label":"nombre","pivot_table":"colegio_programa","pivot":"1","taggable":"0"}',
-                        'order'        => 9,
-                    ])->save();
-                }
-                /*
-                                    $dataRow = $this->dataRow($colegioDataType, 'colegio_belongstomany_carrera_relationship');
-                                     if (!$dataRow->exists) {
-                                         $dataRow->fill([
-                                             'type'         => 'relationship',
-                                             'display_name' => 'Preferencias',
-                                             'required'     => 0,
-                                             'browse'       => 1,
-                                             'read'         => 1,
-                                             'edit'         => 1,
-                                             'add'          => 1,
-                                             'delete'       => 0,
-                                             'details'      => '{"model":App\\\Carrera","table":"carreras","type":"belongsToMany","column":"id","key":"id","label":"display_name","pivot_table":"preferencia","pivot":"1","taggable":"0"}',
-                                             'order'        => 9,
-                                         ])->save();
-                                     }
+
+        $dataRow = $this->dataRow($colegioDataType, 'colegio_belongstomany_programa_relationship');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type' => 'relationship',
+                'display_name' => 'Programas',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 0,
+                'details' => '{"model":"App\\\Programa","table":"programas","type":"belongsToMany","column":"id","key":"id","label":"nombre","pivot_table":"colegio_programa","pivot":"1","taggable":"0"}',
+                'order' => 10,
+            ])->save();
+        }
 
 
-                             */
         //Menu Item
         $menu = Menu::where('name', 'admin')->firstOrFail();
         $menuItem = MenuItem::firstOrNew([
@@ -249,12 +232,11 @@ class ColegiosTableSeeder extends Seeder
                 'celular' => $faker->buildingNumber,
                 'direccion' => $faker->city,
                 'ciudad_id' => $faker->numberBetween((1), (10)),
-                'created_at'=>'2018-09-19 19:48:10',
-                'updated_at'=>'2018-09-19 19:48:10',
+                'created_at' => '2018-09-19 19:48:10',
+                'updated_at' => '2018-09-19 19:48:10',
 
-            ])->programas()->attach([random_int(1,9),10]);
+            ])->programas()->attach([random_int(1, 9), 10]);
         }
-
 
 
     }

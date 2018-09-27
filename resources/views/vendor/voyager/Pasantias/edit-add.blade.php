@@ -57,8 +57,7 @@
                                     $display_options = isset($options->display) ? $options->display : NULL;
                                 @endphp
                                 @if ($options && isset($options->legend) && isset($options->legend->text))
-                                    <legend class="text-{{$options->legend->align or 'center'}}"
-                                            style="background-color: {{$options->legend->bgcolor or '#f0f0f0'}};padding: 5px;">{{$options->legend->text}}</legend>
+                                    <legend class="text-{{$options->legend->align or 'center'}}" style="background-color: {{$options->legend->bgcolor or '#f0f0f0'}};padding: 5px;">{{$options->legend->text}}</legend>
                                 @endif
                                 @if ($options && isset($options->formfields_custom))
                                     @include('voyager::formfields.custom.' . $options->formfields_custom)
@@ -80,52 +79,10 @@
                                 @endif
                             @endforeach
 
-                        <!-- Nuevos Campos relaciones estudiante->carrera -->
-
-                            @if( $preferencias->isEmpty())
-                                @for($x=1;$x<=3;$x++)
-                                    <div class="form-group  col-md-12">
-
-                                        <label for="name">Preferencia {{$x}}</label>
-
-                                        <select class="form-control select2 select2-hidden-accessible"
-                                                name="preferencia[]"
-                                                tabindex="-1" aria-hidden="true">
-                                            <option value="">Ninguno</option>
-
-                                            @foreach ( $allCarreras as $carrera)
-                                                <option value="{{$carrera->id}}">{{$carrera->nombre}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endfor
-                            @else
-                                @php $x=1; @endphp
-                                @foreach($preferencias as $preferencia)
-
-                                    <div class="form-group  col-md-12">
-
-                                        <label for="name">Preferencia {{$x}}</label>
-
-                                        <select class="form-control select2 select2-hidden-accessible"
-                                                name="preferencia[]"
-                                                tabindex="-1" aria-hidden="true">
-                                            <option value="">Ninguna</option>
-
-                                            @foreach ( $allCarreras as $carrera)
-                                                <option value="{{$carrera->id}}" {{ ($preferencia->carrera_id)== ($carrera->id) ? 'selected' : ''  }}>{{$carrera->nombre}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                        @php $x++; @endphp
-                                @endforeach
-                            @endif
-
                         </div><!-- panel-body -->
 
                         <div class="panel-footer">
-                            <button type="submit"
-                                    class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
+                            <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
                         </div>
                     </form>
 
@@ -149,22 +106,17 @@
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"
-                            aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title"><i class="voyager-warning"></i> {{ __('voyager::generic.are_you_sure') }}
-                    </h4>
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><i class="voyager-warning"></i> {{ __('voyager::generic.are_you_sure') }}</h4>
                 </div>
 
                 <div class="modal-body">
-                    <h4>{{ __('voyager::generic.are_you_sure_delete') }} '<span class="confirm_delete_name"></span>'
-                    </h4>
+                    <h4>{{ __('voyager::generic.are_you_sure_delete') }} '<span class="confirm_delete_name"></span>'</h4>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default"
-                            data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
-                    <button type="button" class="btn btn-danger"
-                            id="confirm_delete">{{ __('voyager::generic.delete_confirm') }}
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-danger" id="confirm_delete">{{ __('voyager::generic.delete_confirm') }}
                     </button>
                 </div>
             </div>
@@ -194,7 +146,7 @@
                 $('.side-body').multilingual({"editing": true});
             @endif
 
-            $('.side-body input[data-slug-origin]').each(function (i, el) {
+            $('.side-body input[data-slug-origin]').each(function(i, el) {
                 $(el).slugify();
             });
 
@@ -203,10 +155,10 @@
                 $image = $(this).siblings('img');
 
                 params = {
-                    slug: '{{ $dataType->slug }}',
-                    image: $image.data('image'),
-                    id: $image.data('id'),
-                    field: $image.parent().data('field-name'),
+                    slug:   '{{ $dataType->slug }}',
+                    image:  $image.data('image'),
+                    id:     $image.data('id'),
+                    field:  $image.parent().data('field-name'),
                     _token: '{{ csrf_token() }}'
                 }
 
@@ -214,17 +166,15 @@
                 $('#confirm_delete_modal').modal('show');
             });
 
-            $('#confirm_delete').on('click', function () {
+            $('#confirm_delete').on('click', function(){
                 $.post('{{ route('voyager.media.remove') }}', params, function (response) {
-                    if (response
+                    if ( response
                         && response.data
                         && response.data.status
-                        && response.data.status == 200) {
+                        && response.data.status == 200 ) {
 
                         toastr.success(response.data.message);
-                        $image.parent().fadeOut(300, function () {
-                            $(this).remove();
-                        })
+                        $image.parent().fadeOut(300, function() { $(this).remove(); })
                     } else {
                         toastr.error("Error removing image.");
                     }

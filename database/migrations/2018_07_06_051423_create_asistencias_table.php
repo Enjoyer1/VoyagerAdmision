@@ -24,7 +24,7 @@ class CreateAsistenciasTable extends Migration
             $table->foreign('pasantia_id')->references('id')->on('pasantias')->onDelete('cascade');
 
 
-            $table->enum('asistencia',['Presente', 'Ausente']);
+            $table->boolean('asistencia')->default(true);
             $table->date('date');
             $table->timestamps();
         });
