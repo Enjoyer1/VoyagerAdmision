@@ -192,7 +192,19 @@
                                                     @endif
                                                 @else
                                                     @include('voyager::multilingual.input-hidden-bread-browse')
-                                                    <span>{{ $data->{$row->field} }}</span>
+                                                    @if ($row->display_name == 'Cupos')
+                                                        @if($count[$data->id] >= $data->{$row->field})
+                                                            <span class="label label-danger">{{$count[$data->id]."/". $data->{$row->field} }}</span>
+                                                        @elseif(($count[$data->id]) < $data->{$row->field} && ($count[$data->id]) >= $data->{$row->field}-5)
+                                                                <span class="label label-warning">{{$count[$data->id]."/". $data->{$row->field} }}</span>
+                                                        @else
+                                                                <span class="label label-default">{{$count[$data->id]."/". $data->{$row->field} }}</span>
+                                                        @endif
+
+
+                                                    @else
+                                                        <span>{{ $data->{$row->field} }}</span>
+                                                    @endif
                                                 @endif
                                             </td>
                                         @endforeach
@@ -202,10 +214,13 @@
                                                 @include('voyager::bread.partials.actions', ['action' => $action])
                                             @endforeach
 
-                                            @can('add',app('App\Preferencia'))
-                                                    <a style="margin-right: 3px" href="{{ route('voyager.'.'asistencias'.'.index') }}?key=pasantia_id&filter=contains&s={{$data->id}}" title="Ver Estudiantes" class="btn btn-sm btn-success pull-right view">
-                                                 <i class="voyager-people"></i> <span class="hidden-xs hidden-sm">Ver Estudiantes</span>
-                                                    </a>
+                                            @can('read',app('App\Asistencia'))
+                                                <a style="margin-right: 3px"
+                                                   href="{{ route('voyager.'.'asistencias'.'.index') }}?key=pasantia_id&filter=contains&s={{$data->id}}"
+                                                   title="Ver Estudiantes"
+                                                   class="btn btn-sm btn-success pull-right view">
+                                                    <i class="voyager-people"></i> <span class="hidden-xs hidden-sm">Ver Estudiantes</span>
+                                                </a>
                                             @endcan
                                         </td>
                                     </tr>

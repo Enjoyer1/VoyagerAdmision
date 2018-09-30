@@ -8,6 +8,8 @@ class Estudiante extends Model
 {
     protected $fillable = ['nombre','apellido1','apellido2','genero','RUN','email','celular','colegio_id','curso_id'];
 
+    public $additional_attributes = ['nombre_completo'];
+
 
     public function colegios()
     {
@@ -27,4 +29,10 @@ class Estudiante extends Model
         return  $this->belongsToMany('App\Pasantia','Asistencias')->withPivot('asistencia','date')->withTimestamps();
     }
 
+
+
+    public function getNombreCompletoAttribute()
+    {
+        return "{$this->nombre} {$this->apellido1} {$this->apellido2}";
+    }
 }
