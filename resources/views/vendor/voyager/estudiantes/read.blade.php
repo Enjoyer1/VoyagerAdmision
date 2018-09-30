@@ -63,7 +63,7 @@
                                                  src="{{ filter_var($dataTypeContent->{$row->field}, FILTER_VALIDATE_URL) ? $dataTypeContent->{$row->field} : Voyager::image($dataTypeContent->{$row->field}) }}">
                                         @endif
                                     @elseif($row->type == 'relationship')
-                                        @include('voyager::formfields.relationship', ['view' => 'read', 'options' => $rowDetails])
+                                            @include('voyager::formfields.relationship', ['view' => 'read', 'options' => $rowDetails,'name'=> $row->display_name])
                                     @elseif($row->type == 'select_dropdown' && property_exists($rowDetails, 'options') &&
                                             !empty($rowDetails->options->{$dataTypeContent->{$row->field}})
                                     )
@@ -133,130 +133,133 @@
 
                         @endforeach
                     </div>
-                    <div class="row">
-                        <!--Data 1 New -->
-                        @foreach($dataType2->readRows as $row)
-                            @php $rowDetails = json_decode($row->details);
+                    @if(isset($dataTypeContent2))
+                        <div class="row">
+                            <!--Data 1 New -->
+                            @foreach($dataType2->readRows as $row)
+                                @php $rowDetails = json_decode($row->details);
                          if($rowDetails === null){
                                 $rowDetails=new stdClass();
                                 $rowDetails->options=new stdClass();
                          }
-                            @endphp
-                            <div class="col-md-6">
-                                <div class="panel-heading" style="border-bottom:0;">
-                                    <h3 class="panel-title">{{ $row->display_name }}</h3>
-                                </div>
+                                @endphp
+                                <div class="col-md-6">
+                                    <div class="panel-heading" style="border-bottom:0;">
+                                        <h3 class="panel-title">{{ $row->display_name }}</h3>
+                                    </div>
 
-                                <div class="panel-body" style="padding-top:0;">
+                                    <div class="panel-body" style="padding-top:0;">
 
-                                    @if($row->type != "image")
-                                        @include('voyager::multilingual.input-hidden-bread-read')
-                                        @if ($row->display_name == 'Carrera')
-                                            @foreach($allCarrera as $carrera)
-                                                @if($carrera->id == $dataTypeContent2->{$row->field})
-                                                    <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
-                                                        {{$carrera->nombre}}
-                                                    </a>
+                                        @if($row->type != "image")
+                                            @include('voyager::multilingual.input-hidden-bread-read')
+                                            @if ($row->display_name == 'Carrera')
+                                                @foreach($allCarrera as $carrera)
+                                                    @if($carrera->id == $dataTypeContent2->{$row->field})
+                                                        <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
+                                                            {{$carrera->nombre}}
+                                                        </a>
+                                                    @endif
+                                                @endforeach
+                                                @if(!$allCarrera->contains('id',$dataTypeContent2->{$row->field}))
+                                                    {{'No posee'}}
                                                 @endif
-                                            @endforeach
-                                            @if(!$allCarrera->contains('id',$dataTypeContent2->{$row->field}))
-                                                {{'No posee'}}
+                                            @else
+                                                <p>{{ $dataTypeContent2->{$row->field} }}</p>
                                             @endif
-                                        @else
-                                            <p>{{ $dataTypeContent2->{$row->field} }}</p>
                                         @endif
-                                    @endif
-                                </div><!-- panel-body -->
+                                    </div><!-- panel-body -->
 
-                                <hr style="margin:0;">
+                                    <hr style="margin:0;">
 
-                            </div>
-                        @endforeach
+                                </div>
+                            @endforeach
 
-                    </div>
-                    <!--Data 2 New -->
-
-                    <div class="row">
-                        @foreach($dataType2->readRows as $row)
-                            @php $rowDetails = json_decode($row->details);
+                        </div>
+                    @endif
+                <!--Data 2 New -->
+                    @if(isset($dataTypeContent3))
+                        <div class="row">
+                            @foreach($dataType2->readRows as $row)
+                                @php $rowDetails = json_decode($row->details);
                          if($rowDetails === null){
                                 $rowDetails=new stdClass();
                                 $rowDetails->options=new stdClass();
                          }
-                            @endphp
-                            <div class="col-md-6">
+                                @endphp
+                                <div class="col-md-6">
 
-                                <div class="panel-heading" style="border-bottom:0;">
-                                    <h3 class="panel-title">{{ $row->display_name }}</h3>
-                                </div>
+                                    <div class="panel-heading" style="border-bottom:0;">
+                                        <h3 class="panel-title">{{ $row->display_name }}</h3>
+                                    </div>
 
-                                <div class="panel-body" style="padding-top:0;">
-                                    @if($row->type != "image")
-                                        @include('voyager::multilingual.input-hidden-bread-read')
-                                        @if ($row->display_name == 'Carrera' or $row->display_name == 'Carrera id')
-                                            @foreach($allCarrera as $carrera)
-                                                @if($carrera->id == $dataTypeContent3->{$row->field})
-                                                    <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
-                                                        {{$carrera->nombre}}
-                                                    </a>
+                                    <div class="panel-body" style="padding-top:0;">
+                                        @if($row->type != "image")
+                                            @include('voyager::multilingual.input-hidden-bread-read')
+                                            @if ($row->display_name == 'Carrera' or $row->display_name == 'Carrera id')
+                                                @foreach($allCarrera as $carrera)
+                                                    @if($carrera->id == $dataTypeContent3->{$row->field})
+                                                        <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
+                                                            {{$carrera->nombre}}
+                                                        </a>
+                                                    @endif
+                                                @endforeach
+                                                @if(!$allCarrera->contains('id',$dataTypeContent3->{$row->field}))
+                                                    {{'No posee'}}
                                                 @endif
-                                            @endforeach
-                                            @if(!$allCarrera->contains('id',$dataTypeContent3->{$row->field}))
-                                                {{'No posee'}}
+                                            @else
+                                                <p>{{ $dataTypeContent3->{$row->field} }}</p>
                                             @endif
-                                        @else
-                                            <p>{{ $dataTypeContent3->{$row->field} }}</p>
                                         @endif
-                                    @endif
-                                </div><!-- panel-body -->
+                                    </div><!-- panel-body -->
 
-                                <hr style="margin:0;">
+                                    <hr style="margin:0;">
 
-                            </div>
-                        @endforeach
-                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
 
+                    @if(isset($dataTypeContent4))
                     <!--Data 3 New -->
-                    <div class="row">
-                        @foreach($dataType2->readRows as $row)
-                            @php $rowDetails = json_decode($row->details);
+                        <div class="row">
+                            @foreach($dataType2->readRows as $row)
+                                @php $rowDetails = json_decode($row->details);
                          if($rowDetails === null){
                                 $rowDetails=new stdClass();
                                 $rowDetails->options=new stdClass();
                          }
-                            @endphp
-                            <div class="col-md-6">
-                                <div class="panel-heading" style="border-bottom:0;">
-                                    <h3 class="panel-title">{{ $row->display_name }}</h3>
-                                </div>
+                                @endphp
+                                <div class="col-md-6">
+                                    <div class="panel-heading" style="border-bottom:0;">
+                                        <h3 class="panel-title">{{ $row->display_name }}</h3>
+                                    </div>
 
-                                <div class="panel-body" style="padding-top:0;">
-                                @if($row->type != "image")
-                                    <!-- Here renders new -->
-                                        @include('voyager::multilingual.input-hidden-bread-read')
+                                    <div class="panel-body" style="padding-top:0;">
+                                    @if($row->type != "image")
+                                        <!-- Here renders new -->
+                                            @include('voyager::multilingual.input-hidden-bread-read')
 
-                                        @if ($row->display_name == 'Carrera')
-                                            @foreach($allCarrera as $carrera)
-                                                @if($carrera->id == $dataTypeContent4->{$row->field})
-                                                    <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
-                                                        {{$carrera->nombre}}
-                                                    </a>
+                                            @if ($row->display_name == 'Carrera')
+                                                @foreach($allCarrera as $carrera)
+                                                    @if($carrera->id == $dataTypeContent4->{$row->field})
+                                                        <a href="{{ route('voyager.'.'carreras'.'.show', $carrera->id) }}">
+                                                            {{$carrera->nombre}}
+                                                        </a>
+                                                    @endif
+                                                @endforeach
+                                                @if(!$allCarrera->contains('id',$dataTypeContent4->{$row->field}))
+                                                    {{'No posee'}}
                                                 @endif
-                                            @endforeach
-                                            @if(!$allCarrera->contains('id',$dataTypeContent4->{$row->field}))
-                                                {{'No posee'}}
+                                            @else
+                                                <p>{{ $dataTypeContent4->{$row->field} }}</p>
                                             @endif
-                                        @else
-                                            <p>{{ $dataTypeContent4->{$row->field} }}</p>
                                         @endif
-                                    @endif
-                                </div><!-- panel-body -->
-
-                                <hr style="margin:0;">
-
-                            </div>
-                        @endforeach
-                    </div>
+                                    </div><!-- panel-body -->
+                                    <hr style="margin:0;">
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

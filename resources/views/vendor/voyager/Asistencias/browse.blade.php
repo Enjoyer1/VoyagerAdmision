@@ -146,7 +146,7 @@
                                                         @if($data->{$row->field})
                                                             <span class="label label-info">{{ $options->on }}</span>
                                                         @else
-                                                            <span class="label label-primary">{{ $options->off }}</span>
+                                                            <span class="label label-warning">{{ $options->off }}</span>
                                                         @endif
                                                     @else
                                                         {{ $data->{$row->field} }}
@@ -192,7 +192,24 @@
                                                     @endif
                                                 @else
                                                     @include('voyager::multilingual.input-hidden-bread-browse')
-                                                    <span>{{ $data->{$row->field} }}</span>
+                                                        @php
+                                                            $idToShow=$data->{$row->field};
+                                                        @endphp
+                                                    @if ($row->display_name == 'Estudiante')
+                                                        @if(isset($idToShow))
+                                                                <a href="{{ route('voyager.'."estudiantes".'.show',$idToShow) }}"><span>{{$estudiantesNombres[$idToShow]  }}</span></a>
+                                                        @else
+                                                            Sin Definir
+                                                        @endif
+                                                    @elseif ($row->display_name == 'Pasantía')
+                                                        @if(isset($idToShow))
+                                                                <a href="{{ route('voyager.'."pasantias".'.show',$idToShow) }}"><span>{{$pasantiasNombres[$idToShow]  }}</span></a>
+                                                        @else
+                                                            Sin Definir
+                                                        @endif
+                                                    @else
+                                                        <span>{{ $data->{$row->field} }}</span>
+                                                    @endif
                                                 @endif
                                             </td>
                                         @endforeach
