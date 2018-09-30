@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Voyager;
 
+use App\Asistencia;
 use App\Estudiante;
-use App\Preferencia;
-use App\Carrera;
+use App\Pasantia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Database\Schema\SchemaManager;
@@ -31,7 +31,6 @@ class AsistenciasController extends VoyagerBaseController
     //      Browse our Data Type (B)READ
     //
     //****************************************
-
     public function index(Request $request)
     {
         // GET THE SLUG, ex. 'posts', 'pages', etc.
@@ -45,7 +44,7 @@ class AsistenciasController extends VoyagerBaseController
 
         $getter = $dataType->server_side ? 'paginate' : 'get';
 
-        $search = (object)['value' => $request->get('s'), 'key' => $request->get('key'), 'filter' => $request->get('filter')];
+        $search = (object) ['value' => $request->get('s'), 'key' => $request->get('key'), 'filter' => $request->get('filter')];
         $searchable = $dataType->server_side ? array_keys(SchemaManager::describeTable(app($dataType->model_name)->getTable())->toArray()) : '';
         $orderBy = $request->get('order_by');
         $sortOrder = $request->get('sort_order', null);
@@ -62,7 +61,7 @@ class AsistenciasController extends VoyagerBaseController
 
             if ($search->value && $search->key && $search->filter) {
                 $search_filter = ($search->filter == 'equals') ? '=' : 'LIKE';
-                $search_value = ($search->filter == 'equals') ? $search->value : '%' . $search->value . '%';
+                $search_value = ($search->filter == 'equals') ? $search->value : '%'.$search->value.'%';
                 $query->where($search->key, $search_filter, $search_value);
             }
 
@@ -86,6 +85,7 @@ class AsistenciasController extends VoyagerBaseController
             $model = false;
         }
 
+
         // Check if BREAD is Translatable
         if (($isModelTranslatable = is_bread_translatable($model))) {
             $dataTypeContent->load('translations');
@@ -94,19 +94,18 @@ class AsistenciasController extends VoyagerBaseController
         // Check if server side pagination is enabled
         $isServerSide = isset($dataType->server_side) && $dataType->server_side;
 
+        //Obtener nombre de pasantias y alumnos
+
+        $pasantiasNombres=Pasantia::all()->pluck('nombre','id');
+        $estudiantesNombres=Estudiante::all()->pluck('nombre_completo','id');
+
+
+
         $view = 'voyager::bread.browse';
 
         if (view()->exists("voyager::$slug.browse")) {
             $view = "voyager::$slug.browse";
         }
-        ///nombres por carreras a mostrar
-
-        $carreras_id = Preferencia::orderBy('id','asc')
-            ->where('posicion', 1)
-            ->pluck('carrera_id','estudiante_id')
-            ->all();
-        $carreras=Carrera::all()->pluck('id','nombre');
-
 
         return Voyager::view($view, compact(
             'dataType',
@@ -117,12 +116,10 @@ class AsistenciasController extends VoyagerBaseController
             'sortOrder',
             'searchable',
             'isServerSide',
-            'carreras_id',
-            'carreras'
+            'pasantiasNombres',
+            'estudiantesNombres'
         ));
     }
-
-    //***************************************
     //                _____
     //               |  __ \
     //               | |__) |
@@ -134,6 +131,11 @@ class AsistenciasController extends VoyagerBaseController
     //
     //****************************************
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
     public function show(Request $request, $id)
     {
         $slug = $this->getSlug($request);
@@ -163,61 +165,17 @@ class AsistenciasController extends VoyagerBaseController
 
         $view = 'voyager::bread.read';
 
+
+        $idEstudiante=Asistencia::find($id)->estudiante_id;
+        $idPasantia=Asistencia::find($id)->pasantia_id;
+        $nombreEstudiante=Estudiante::find($idEstudiante)->nombre_completo;
+        $nombrePasantia=Pasantia::find($idPasantia)->nombre;
+
         if (view()->exists("voyager::$slug.read")) {
             $view = "voyager::$slug.read";
         }
-        ///Preferencia 1 mostrar
-        ///
-        ///
-        $slug2 = 'preferencias';
 
-        $dataType2 = Voyager::model('DataType')->where('slug', '=', $slug2)->first();
-        $relationships2 = $this->getRelationships($dataType2);
-        $preferencia = Preferencia::all()->where('estudiante_id', $id)->take(3);
-
-        $idPreferencia = [];
-        foreach ($preferencia as $val) {
-            $idPreferencia[] = $val->id;
-
-        }
-        $allCarrera = Carrera::all();
-
-        if (strlen($dataType2->model_name) != 0) {
-            $model2 = app($dataType2->model_name);
-
-            $dataTypeContent2 = call_user_func([$model2->with($relationships2), 'findOrFail'], $idPreferencia[0]);
-
-        } else {
-            $dataTypeContent2 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
-        }
-        // Check permission
-        $this->authorize('read', $dataTypeContent2);
-        // Check if BREAD is Translatable
-        $isModelTranslatable2 = is_bread_translatable($dataTypeContent2);
-
-
-        ////////////////
-        /// //////////  Preferencia 2 Mostrar
-        /// ///////
-        if (strlen($dataType2->model_name) != 0) {
-            $model2 = app($dataType2->model_name);
-            $dataTypeContent3 = call_user_func([$model2->with($relationships2), 'findOrFail'], $idPreferencia[1]);
-        } else {
-            $dataTypeContent3 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
-        }
-
-
-        ////////////////
-        /// //////////  Preferencia 2 Mostrar
-        /// ///////
-        if (strlen($dataType2->model_name) != 0) {
-            $model2 = app($dataType2->model_name);
-            $dataTypeContent4 = call_user_func([$model2->with($relationships2), 'findOrFail'], $idPreferencia[2]);
-        } else {
-            $dataTypeContent4 = DB::table($dataType->name)->where('estudiante_id', $id)->first();
-        }
-
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'allCarrera', 'isModelTranslatable', 'dataType2', 'dataTypeContent2', 'dataTypeContent3', 'dataTypeContent4', 'isModelTranslatable2'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','nombreEstudiante','nombrePasantia'));
     }
 
     //***************************************
@@ -264,12 +222,7 @@ class AsistenciasController extends VoyagerBaseController
             $view = "voyager::$slug.edit-add";
         }
 
-        $allCarreras = Carrera::all();
-        $estudiante = Estudiante::find($id);
-        $preferencias = Preferencia::all()->where('estudiante_id', $id)->take(3);
-
-
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'preferencias', 'estudiante', 'allCarreras', 'preferencias'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
     }
 
     // POST BR(E)AD
@@ -299,31 +252,10 @@ class AsistenciasController extends VoyagerBaseController
 
             event(new BreadDataUpdated($dataType, $data));
 
-
-            $preferencia = Preferencia::all()->where('estudiante_id', $id)->take(3);
-
-            $array = [];
-            foreach ($preferencia as $val) {
-                $array[] = $val->id;
-            }
-
-            if ($request->preferencia) {
-                $x = 0;
-                foreach ($request->preferencia as $preferencia) {
-
-                    $pref = Preferencia::find($array[$x]);
-                    $pref->carrera_id = $preferencia;
-                    $pref->save();
-                    $x++;
-                }
-
-            }
-
-
             return redirect()
                 ->route("voyager.{$dataType->slug}.index")
                 ->with([
-                    'message' => __('voyager::generic.successfully_updated') . " {$dataType->display_name_singular}",
+                    'message'    => __('voyager::generic.successfully_updated')." {$dataType->display_name_singular}",
                     'alert-type' => 'success',
                 ]);
         }
@@ -371,11 +303,8 @@ class AsistenciasController extends VoyagerBaseController
         if (view()->exists("voyager::$slug.edit-add")) {
             $view = "voyager::$slug.edit-add";
         }
-        $allCarreras = Carrera::all();
-        $preferencias = collect([]);
 
-
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'allCarreras', 'preferencias'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
     }
 
     /**
@@ -410,23 +339,10 @@ class AsistenciasController extends VoyagerBaseController
                 return response()->json(['success' => true, 'data' => $data]);
             }
 
-            //add new preferencias
-
-            if ($request->preferencia) {
-                $posicion = 1;
-                foreach ($request->preferencia as $preferencia) {
-                    Preferencia::create([
-                        'estudiante_id' => $data->id,
-                        'carrera_id' => $preferencia,
-                        'posicion' => $posicion,
-                    ]);
-                    $posicion++;
-                }
-            }
             return redirect()
                 ->route("voyager.{$dataType->slug}.index")
                 ->with([
-                    'message' => __('voyager::generic.successfully_added_new') . " {$dataType->display_name_singular}",
+                    'message'    => __('voyager::generic.successfully_added_new')." {$dataType->display_name_singular}",
                     'alert-type' => 'success',
                 ]);
         }
@@ -472,11 +388,11 @@ class AsistenciasController extends VoyagerBaseController
         $res = $data->destroy($ids);
         $data = $res
             ? [
-                'message' => __('voyager::generic.successfully_deleted') . " {$displayName}",
+                'message'    => __('voyager::generic.successfully_deleted')." {$displayName}",
                 'alert-type' => 'success',
             ]
             : [
-                'message' => __('voyager::generic.error_deleting') . " {$displayName}",
+                'message'    => __('voyager::generic.error_deleting')." {$displayName}",
                 'alert-type' => 'error',
             ];
 
@@ -533,13 +449,13 @@ class AsistenciasController extends VoyagerBaseController
             if (isset($options->thumbnails)) {
                 foreach ($options->thumbnails as $thumbnail) {
                     $ext = explode('.', $data->{$row->field});
-                    $extension = '.' . $ext[count($ext) - 1];
+                    $extension = '.'.$ext[count($ext) - 1];
 
                     $path = str_replace($extension, '', $data->{$row->field});
 
                     $thumb_name = $thumbnail->name;
 
-                    $this->deleteFileIfExists($path . '-' . $thumb_name . $extension);
+                    $this->deleteFileIfExists($path.'-'.$thumb_name.$extension);
                 }
             }
         }
@@ -569,7 +485,7 @@ class AsistenciasController extends VoyagerBaseController
             return redirect()
                 ->route("voyager.{$dataType->slug}.index")
                 ->with([
-                    'message' => __('voyager::bread.ordering_not_set'),
+                    'message'    => __('voyager::bread.ordering_not_set'),
                     'alert-type' => 'error',
                 ]);
         }
