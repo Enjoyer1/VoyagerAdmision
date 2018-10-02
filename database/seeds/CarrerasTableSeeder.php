@@ -95,7 +95,7 @@ class CarrerasTableSeeder extends Seeder
             if (!$dataRow->exists) {
                 $dataRow->fill([
                     'type' => 'text',
-                    'display_name' => 'Celular',
+                    'display_name' => 'Correo Encargado',
                     'required' => 0,
                     'browse' => 1,
                     'read' => 1,
