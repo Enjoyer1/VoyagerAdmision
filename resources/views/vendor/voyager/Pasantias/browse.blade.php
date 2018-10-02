@@ -89,6 +89,10 @@
                                             @endif
                                         </th>
                                     @endforeach
+
+                                    <th>
+                                        {{ 'Asistencia Real'}}
+                                    </th>
                                     <th class="actions text-right">{{ __('voyager::generic.actions') }}</th>
                                 </tr>
                                 </thead>
@@ -196,9 +200,9 @@
                                                         @if($count[$data->id] >= $data->{$row->field})
                                                             <span class="label label-danger">{{$count[$data->id]."/". $data->{$row->field} }}</span>
                                                         @elseif(($count[$data->id]) < $data->{$row->field} && ($count[$data->id]) >= $data->{$row->field}-5)
-                                                                <span class="label label-warning">{{$count[$data->id]."/". $data->{$row->field} }}</span>
+                                                            <span class="label label-warning">{{$count[$data->id]."/". $data->{$row->field} }}</span>
                                                         @else
-                                                                <span class="label label-default">{{$count[$data->id]."/". $data->{$row->field} }}</span>
+                                                            <span class="label label-default">{{$count[$data->id]."/". $data->{$row->field} }}</span>
                                                         @endif
 
 
@@ -208,6 +212,16 @@
                                                 @endif
                                             </td>
                                         @endforeach
+
+                                        <!-- Enlazar nombre de carreras al clickear --href-->
+                                            <td> @include('voyager::multilingual.input-hidden-bread-browse')
+                                                @if (isset($countAsistencia[$data->id]))
+                                                    {{$countAsistencia[$data->id]}}
+                                                @else
+                                                    {{'0'}}
+                                                @endif
+                                            </td>
+
                                         <td class="no-sort no-click" id="bread-actions">
 
                                             @foreach(Voyager::actions() as $action)
