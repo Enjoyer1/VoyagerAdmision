@@ -49,6 +49,18 @@ class AsistenciasController extends VoyagerBaseController
         $orderBy = $request->get('order_by');
         $sortOrder = $request->get('sort_order', null);
 
+
+        //validate and get pasantiaID
+
+        if (session()->has('pasantiaId')){
+            $pasantiaId=session('pasantiaId');
+
+            $search->value=$pasantiaId;
+            $search->key='pasantia_id';
+            $search->filter='contains';
+        }
+
+
         // Next Get or Paginate the actual content from the MODEL that corresponds to the slug DataType
         if (strlen($dataType->model_name) != 0) {
             $relationships = $this->getRelationships($dataType);
@@ -95,10 +107,8 @@ class AsistenciasController extends VoyagerBaseController
         $isServerSide = isset($dataType->server_side) && $dataType->server_side;
 
         //Obtener nombre de pasantias y alumnos
-
         $pasantiasNombres=Pasantia::all()->pluck('nombre','id');
         $estudiantesNombres=Estudiante::all()->pluck('nombre_completo','id');
-
 
 
         $view = 'voyager::bread.browse';
@@ -119,6 +129,7 @@ class AsistenciasController extends VoyagerBaseController
             'pasantiasNombres',
             'estudiantesNombres'
         ));
+
     }
     //                _____
     //               |  __ \
@@ -216,13 +227,21 @@ class AsistenciasController extends VoyagerBaseController
         // Check if BREAD is Translatable
         $isModelTranslatable = is_bread_translatable($dataTypeContent);
 
+        // get nombres ids
+        $estudianteId=Asistencia::findOrFail($id)->estudiante_id;
+        $pasantiaId=Asistencia::findOrFail($id)->pasantia_id;
+
+        $estudianteNombre=Estudiante::findOrFail($estudianteId)->nombre;
+        $pasantiaNombre=Estudiante::findOrFail($pasantiaId)->nombre;
+        $fechaPasantia=Pasantia::findOrFail($pasantiaId)->fecha;
+
         $view = 'voyager::bread.edit-add';
 
         if (view()->exists("voyager::$slug.edit-add")) {
             $view = "voyager::$slug.edit-add";
         }
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','pasantiaNombre','estudianteNombre','fechaPasantia'));
     }
 
     // POST BR(E)AD
@@ -247,16 +266,18 @@ class AsistenciasController extends VoyagerBaseController
             return response()->json(['errors' => $val->messages()]);
         }
 
+        $pasantiaId=$data->pasantia_id;
         if (!$request->ajax()) {
             $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
 
             event(new BreadDataUpdated($dataType, $data));
 
             return redirect()
-                ->route("voyager.{$dataType->slug}.index")
+                ->route('voyager.'.$slug.'.index')
                 ->with([
                     'message'    => __('voyager::generic.successfully_updated')." {$dataType->display_name_singular}",
                     'alert-type' => 'success',
+                    'pasantiaId'=>$pasantiaId,
                 ]);
         }
     }

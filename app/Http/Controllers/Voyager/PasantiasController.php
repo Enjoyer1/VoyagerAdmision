@@ -94,11 +94,26 @@ class PasantiasController extends VoyagerBaseController
         // Check if server side pagination is enabled
         $isServerSide = isset($dataType->server_side) && $dataType->server_side;
 
-        //contar alumnos por pasantías
+        //contar  número de alumnos por pasantías
         $count = collect([]);
         $pasantias = Pasantia::withCount('estudiantes')->get();
         foreach ($pasantias as $pasantia) {
             $count[$pasantia->id] = $pasantia->estudiantes_count;
+        }
+
+        //contar alumnos presentes por asistencias
+
+        $asistenciaEstudiantes = DB::table('asistencias')
+            ->select(DB::raw('count(*) as asistencia_real, pasantia_id'))
+            ->where('asistencia', '=', 1)
+            ->groupBy('pasantia_id')
+            ->get();
+
+
+
+        $countAsistencia = collect([]);
+        foreach ($asistenciaEstudiantes as $asistencia){
+            $countAsistencia[$asistencia->pasantia_id]=$asistencia->asistencia_real;
         }
 
         $view = 'voyager::bread.browse';
@@ -117,7 +132,8 @@ class PasantiasController extends VoyagerBaseController
             'sortOrder',
             'searchable',
             'isServerSide',
-            'count'
+            'count',
+            'countAsistencia'
         ));
     }
     //                _____
