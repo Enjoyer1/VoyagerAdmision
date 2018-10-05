@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Voyager;
 
 use App\Asistencia;
 use App\Estudiante;
+use App\Exports\EstudiantesExport;
 use App\Preferencia;
 use App\Carrera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use TCG\Voyager\Database\Schema\SchemaManager;
 use TCG\Voyager\Events\BreadDataAdded;
 use TCG\Voyager\Events\BreadDataDeleted;
@@ -32,6 +34,15 @@ class EstudiantesController extends VoyagerBaseController
     //      Browse our Data Type (B)READ
     //
     //****************************************
+
+
+    public function export()
+    {
+
+        $this->authorize('browse', app('App\Estudiante'));
+
+        return Excel::download(new EstudiantesExport, 'estudiantes.xlsx');
+    }
 
     public function index(Request $request)
     {
