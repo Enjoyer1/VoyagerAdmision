@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Voyager;
 
 use App\Asistencia;
 use App\Estudiante;
+use App\Exports\PasantiasExport;
 use App\Pasantia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use TCG\Voyager\Database\Schema\SchemaManager;
 use TCG\Voyager\Events\BreadDataAdded;
 use TCG\Voyager\Events\BreadDataDeleted;
@@ -31,6 +33,15 @@ class PasantiasController extends VoyagerBaseController
     //      Browse our Data Type (B)READ
     //
     //****************************************
+
+    public function export()
+    {
+        $this->authorize('browse', app('App\Pasantia'));
+
+        return Excel::download(new PasantiasExport, 'Pasantias.xlsx');
+    }
+
+
     public function index(Request $request)
     {
         // GET THE SLUG, ex. 'posts', 'pages', etc.
@@ -94,26 +105,18 @@ class PasantiasController extends VoyagerBaseController
         // Check if server side pagination is enabled
         $isServerSide = isset($dataType->server_side) && $dataType->server_side;
 
-        //contar  número de alumnos por pasantías
-        $count = collect([]);
-        $pasantias = Pasantia::withCount('estudiantes')->get();
-        foreach ($pasantias as $pasantia) {
-            $count[$pasantia->id] = $pasantia->estudiantes_count;
-        }
+        //contar alumnos presentes por asistencias y contar  número de alumnos por pasantías
+        $pasantias= Pasantia::withCount(['estudiantes',
+            'estudiantes as asistencia_real' => function($query) {
+                $query->where('asistencia', '=', 1);
+            }
+        ])->get();
 
-        //contar alumnos presentes por asistencias
-
-        $asistenciaEstudiantes = DB::table('asistencias')
-            ->select(DB::raw('count(*) as asistencia_real, pasantia_id'))
-            ->where('asistencia', '=', 1)
-            ->groupBy('pasantia_id')
-            ->get();
-
-
-
-        $countAsistencia = collect([]);
-        foreach ($asistenciaEstudiantes as $asistencia){
-            $countAsistencia[$asistencia->pasantia_id]=$asistencia->asistencia_real;
+        $asistencia= collect([]);
+        $asistenciaReal = collect([]);
+        foreach ($pasantias as $pasantia){
+            $asistenciaReal[$pasantia->id]=$pasantia->asistencia_real;
+            $asistencia[$pasantia->id] = $pasantia->estudiantes_count;
         }
 
         $view = 'voyager::bread.browse';
@@ -132,8 +135,8 @@ class PasantiasController extends VoyagerBaseController
             'sortOrder',
             'searchable',
             'isServerSide',
-            'count',
-            'countAsistencia'
+            'asistencia',
+            'asistenciaReal'
         ));
     }
     //                _____
