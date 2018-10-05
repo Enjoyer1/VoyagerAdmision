@@ -22,6 +22,13 @@
                 </a>
             @endif
         @endcan
+
+        {{--  excel  export--}}
+        @can('browse',app($dataType->model_name))
+        <a style="float: right;" href="{{ route("excel")}}" class="btn btn-success btn-add-new">
+            <i class="voyager-plus"></i> <span>{{ "Exportar a Excel" }}</span>
+        </a>
+        @endcan
         @include('voyager::multilingual.language-selector')
     </div>
 @stop

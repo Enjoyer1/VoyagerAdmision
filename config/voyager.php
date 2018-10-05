@@ -47,7 +47,7 @@ return [
     */
 
     'models' => [
-        //'namespace' => 'App\\',
+        'namespace' => 'App\\',
     ],
 
     /*
@@ -167,8 +167,10 @@ return [
 
         'widgets' => [
             'TCG\\Voyager\\Widgets\\UserDimmer',
-            'TCG\\Voyager\\Widgets\\PostDimmer',
-            'TCG\\Voyager\\Widgets\\PageDimmer',
+            'App\\Widgets\\PasantiasPendientesDimmer',
+            'App\\Widgets\\PasantiasPendientesDimmer',
+            'App\\Widgets\\PasantiasPendientesDimmer',
+
 
 
 

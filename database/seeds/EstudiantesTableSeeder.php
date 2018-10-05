@@ -262,24 +262,23 @@ class EstudiantesTableSeeder extends Seeder
                 'order' => 14,
             ])->save();
         }
-/*
-        $dataRow = $this->dataRow($estudianteDataType, 'estudiante_belongstomany_carrera_relationship');
+
+        $dataRow = $this->dataRow($estudianteDataType, 'estudiante_belongstomany_pasantia_relationship');
         if (!$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'relationship',
                 'display_name' => 'Carreras',
                 'required'     => 0,
                 'browse'       => 1,
-                'read'         => 1,
-                'read'         => 1,
-                'edit'         => 1,
-                'add'          => 1,
+                'read'         => 0,
+                'edit'         => 0,
+                'add'          => 0,
                 'delete'       => 0,
-                'details'      => '{"model":"App\\\Carrera","table":"carreras","type":"belongsToMany","column":"id","key":"id","label":"nombre","pivot_table":"preferencias","pivot":"1","taggable":"0"}',
+                'details'      => '{"model":"App\\\Carrera","table":"carreras","type":"belongsToMany","column":"id","key":"id","label":"nombre","pivot_table":"asistencias","pivot":"1","taggable":"0"}',
                 'order'        => 15,
             ])->save();
         }
-*/
+
 
         //Menu Item
         $menu = Menu::where('name', 'admin')->firstOrFail();

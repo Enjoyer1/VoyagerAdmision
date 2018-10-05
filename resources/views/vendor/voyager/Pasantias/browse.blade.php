@@ -22,110 +22,117 @@
                 </a>
             @endif
         @endcan
-        @include('voyager::multilingual.language-selector')
-    </div>
-@stop
 
-@section('content')
-    <div class="page-content browse container-fluid">
-        @include('voyager::alerts')
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="panel-body">
-                        @if ($isServerSide)
-                            <form method="get" class="form-search">
-                                <div id="search-input">
-                                    <select id="search_key" name="key">
-                                        @foreach($searchable as $key)
-                                            <option value="{{ $key }}" @if($search->key == $key){{ 'selected' }}@endif>{{ ucwords(str_replace('_', ' ', $key)) }}</option>
-                                        @endforeach
-                                    </select>
-                                    <select id="filter" name="filter">
-                                        <option value="contains" @if($search->filter == "contains"){{ 'selected' }}@endif>
-                                            Contiene
-                                        </option>
-                                        <option value="equals" @if($search->filter == "equals"){{ 'selected' }}@endif>
-                                            =
-                                        </option>
-                                    </select>
-                                    <div class="input-group col-md-12">
-                                        <input type="text" class="form-control"
-                                               placeholder="{{ __('voyager::generic.search') }}" name="s"
-                                               value="{{ $search->value }}">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-info btn-lg" type="submit">
-                                                <i class="voyager-search"></i>
-                                            </button>
-                                        </span>
+        {{--  excel  export--}}
+            @can('browse',app($dataType->model_name))
+                <a style="float: right;" href="{{ route("download")}}" class="btn btn-success btn-add-new">
+                    <i class="voyager-plus"></i> <span>{{ "Exportar a Excel" }}</span>
+                </a>
+            @endcan
+            @include('voyager::multilingual.language-selector')
+        </div>
+    @stop
+
+    @section('content')
+        <div class="page-content browse container-fluid">
+            @include('voyager::alerts')
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered">
+                        <div class="panel-body">
+                            @if ($isServerSide)
+                                <form method="get" class="form-search">
+                                    <div id="search-input">
+                                        <select id="search_key" name="key">
+                                            @foreach($searchable as $key)
+                                                <option value="{{ $key }}" @if($search->key == $key){{ 'selected' }}@endif>{{ ucwords(str_replace('_', ' ', $key)) }}</option>
+                                            @endforeach
+                                        </select>
+                                        <select id="filter" name="filter">
+                                            <option value="contains" @if($search->filter == "contains"){{ 'selected' }}@endif>
+                                                Contiene
+                                            </option>
+                                            <option value="equals" @if($search->filter == "equals"){{ 'selected' }}@endif>
+                                                =
+                                            </option>
+                                        </select>
+                                        <div class="input-group col-md-12">
+                                            <input type="text" class="form-control"
+                                                   placeholder="{{ __('voyager::generic.search') }}" name="s"
+                                                   value="{{ $search->value }}">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-info btn-lg" type="submit">
+                                                    <i class="voyager-search"></i>
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
-                        @endif
-                        <div class="table-responsive">
-                            <table id="dataTable" class="table table-hover">
-                                <thead>
-                                <tr>
-                                    @can('delete',app($dataType->model_name))
-                                        <th>
-                                            <input type="checkbox" class="select_all">
-                                        </th>
-                                    @endcan
-                                    @foreach($dataType->browseRows as $row)
-                                        <th>
-                                            @if ($isServerSide)
-                                                <a href="{{ $row->sortByUrl() }}">
-                                                    @endif
-                                                    {{ $row->display_name }}
-                                                    @if ($isServerSide)
-                                                        @if ($row->isCurrentSortField())
-                                                            @if (!isset($_GET['sort_order']) || $_GET['sort_order'] == 'asc')
-                                                                <i class="voyager-angle-up pull-right"></i>
-                                                            @else
-                                                                <i class="voyager-angle-down pull-right"></i>
-                                                            @endif
-                                                        @endif
-                                                </a>
-                                            @endif
-                                        </th>
-                                    @endforeach
-
-                                    <th>
-                                        {{ 'Asistencia Real'}}
-                                    </th>
-                                    <th class="actions text-right">{{ __('voyager::generic.actions') }}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($dataTypeContent as $data)
+                                </form>
+                            @endif
+                            <div class="table-responsive">
+                                <table id="dataTable" class="table table-hover">
+                                    <thead>
                                     <tr>
                                         @can('delete',app($dataType->model_name))
-                                            <td>
-                                                <input type="checkbox" name="row_id" id="checkbox_{{ $data->getKey() }}"
-                                                       value="{{ $data->getKey() }}">
-                                            </td>
+                                            <th>
+                                                <input type="checkbox" class="select_all">
+                                            </th>
                                         @endcan
                                         @foreach($dataType->browseRows as $row)
-                                            <td>
-                                                <?php $options = json_decode($row->details); ?>
-                                                @if($row->type == 'image')
-                                                    <img src="@if( !filter_var($data->{$row->field}, FILTER_VALIDATE_URL)){{ Voyager::image( $data->{$row->field} ) }}@else{{ $data->{$row->field} }}@endif"
-                                                         style="width:100px">
-                                                @elseif($row->type == 'relationship')
-                                                    @include('voyager::formfields.relationship', ['view' => 'browse'])
-                                                @elseif($row->type == 'select_multiple')
-                                                    @if(property_exists($options, 'relationship'))
-
-                                                        @foreach($data->{$row->field} as $item)
-                                                            @if($item->{$row->field . '_page_slug'})
-                                                                <a href="{{ $item->{$row->field . '_page_slug'} }}">{{ $item->{$row->field} }}</a>@if(!$loop->last)
-                                                                    , @endif
-                                                            @else
-                                                                {{ $item->{$row->field} }}
+                                            <th>
+                                                @if ($isServerSide)
+                                                    <a href="{{ $row->sortByUrl() }}">
+                                                        @endif
+                                                        {{ $row->display_name }}
+                                                        @if ($isServerSide)
+                                                            @if ($row->isCurrentSortField())
+                                                                @if (!isset($_GET['sort_order']) || $_GET['sort_order'] == 'asc')
+                                                                    <i class="voyager-angle-up pull-right"></i>
+                                                                @else
+                                                                    <i class="voyager-angle-down pull-right"></i>
+                                                                @endif
                                                             @endif
-                                                        @endforeach
+                                                    </a>
+                                                @endif
+                                            </th>
+                                        @endforeach
 
-                                                        {{-- $data->{$row->field}->implode($options->relationship->label, ', ') --}}
+                                        <th>
+                                            <span style="display: block;text-align: center"> {{ 'Asistencia Real'}}</span>
+                                        </th>
+                                        <th class="actions text-right">{{ __('voyager::generic.actions') }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($dataTypeContent as $data)
+                                        <tr>
+                                            @can('delete',app($dataType->model_name))
+                                                <td>
+                                                    <input type="checkbox" name="row_id" id="checkbox_{{ $data->getKey() }}"
+                                                           value="{{ $data->getKey() }}">
+                                                </td>
+                                            @endcan
+                                            @foreach($dataType->browseRows as $row)
+                                                <td>
+                                                    <?php $options = json_decode($row->details); ?>
+                                                    @if($row->type == 'image')
+                                                        <img src="@if( !filter_var($data->{$row->field}, FILTER_VALIDATE_URL)){{ Voyager::image( $data->{$row->field} ) }}@else{{ $data->{$row->field} }}@endif"
+                                                             style="width:100px">
+                                                    @elseif($row->type == 'relationship')
+                                                        @include('voyager::formfields.relationship', ['view' => 'browse'])
+                                                    @elseif($row->type == 'select_multiple')
+                                                        @if(property_exists($options, 'relationship'))
+
+                                                            @foreach($data->{$row->field} as $item)
+                                                                @if($item->{$row->field . '_page_slug'})
+                                                                    <a href="{{ $item->{$row->field . '_page_slug'} }}">{{ $item->{$row->field} }}</a>@if(!$loop->last)
+                                                                        , @endif
+                                                                @else
+                                                                    {{ $item->{$row->field} }}
+                                                                @endif
+                                                            @endforeach
+
+                                                            {{-- $data->{$row->field}->implode($options->relationship->label, ', ') --}}
                                                     @elseif(property_exists($options, 'options'))
                                                         @foreach($data->{$row->field} as $item)
                                                             {{ $options->options->{$item} . (!$loop->last ? ', ' : '') }}
@@ -197,12 +204,12 @@
                                                 @else
                                                     @include('voyager::multilingual.input-hidden-bread-browse')
                                                     @if ($row->display_name == 'Cupos')
-                                                        @if($count[$data->id] >= $data->{$row->field})
-                                                            <span class="label label-danger">{{$count[$data->id]."/". $data->{$row->field} }}</span>
-                                                        @elseif(($count[$data->id]) < $data->{$row->field} && ($count[$data->id]) >= $data->{$row->field}-5)
-                                                            <span class="label label-warning">{{$count[$data->id]."/". $data->{$row->field} }}</span>
+                                                        @if($asistencia[$data->id] >= $data->{$row->field})
+                                                            <span class="label label-danger">{{$asistencia[$data->id]."/". $data->{$row->field} }}</span>
+                                                        @elseif(($asistencia[$data->id]) < $data->{$row->field} && ($asistencia[$data->id]) >= $data->{$row->field}-5)
+                                                            <span class="label label-warning">{{$asistencia[$data->id]."/". $data->{$row->field} }}</span>
                                                         @else
-                                                            <span class="label label-default">{{$count[$data->id]."/". $data->{$row->field} }}</span>
+                                                            <span class="label label-default">{{$asistencia[$data->id]."/". $data->{$row->field} }}</span>
                                                         @endif
 
 
@@ -213,61 +220,61 @@
                                             </td>
                                         @endforeach
 
-                                        <!-- Enlazar nombre de carreras al clickear --href-->
-                                            <td> @include('voyager::multilingual.input-hidden-bread-browse')
-                                                @if (isset($countAsistencia[$data->id]))
-                                                    {{$countAsistencia[$data->id]}}
-                                                @else
-                                                    {{'0'}}
-                                                @endif
+                                            {{--  Enlazar nombre de carreras al clickear --href --}}
+                                                <td> @include('voyager::multilingual.input-hidden-bread-browse')
+                                                    @if (isset($asistenciaReal[$data->id]))
+                                                   <span style="display: block;font-weight: bold;text-align: center">{{$asistenciaReal[$data->id]}}</span>
+                                                    @else
+                                                        {{'0'}}
+                                                    @endif
+                                                </td>
+
+                                            <td class="no-sort no-click" id="bread-actions">
+
+                                                @foreach(Voyager::actions() as $action)
+                                                    @include('voyager::bread.partials.actions', ['action' => $action])
+                                                @endforeach
+
+                                                @can('read',app('App\Asistencia'))
+                                                    <a style="margin-right: 3px"
+                                                       href="{{ route('voyager.'.'asistencias'.'.index') }}?key=pasantia_id&filter=contains&s={{$data->id}}"
+                                                       title="Ver Estudiantes"
+                                                       class="btn btn-sm btn-success pull-right view">
+                                                        <i class="voyager-people"></i> <span class="hidden-xs hidden-sm">Ver Estudiantes</span>
+                                                    </a>
+                                                @endcan
                                             </td>
-
-                                        <td class="no-sort no-click" id="bread-actions">
-
-                                            @foreach(Voyager::actions() as $action)
-                                                @include('voyager::bread.partials.actions', ['action' => $action])
-                                            @endforeach
-
-                                            @can('read',app('App\Asistencia'))
-                                                <a style="margin-right: 3px"
-                                                   href="{{ route('voyager.'.'asistencias'.'.index') }}?key=pasantia_id&filter=contains&s={{$data->id}}"
-                                                   title="Ver Estudiantes"
-                                                   class="btn btn-sm btn-success pull-right view">
-                                                    <i class="voyager-people"></i> <span class="hidden-xs hidden-sm">Ver Estudiantes</span>
-                                                </a>
-                                            @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if ($isServerSide)
+                                <div class="pull-left">
+                                    <div role="status" class="show-res" aria-live="polite">{{ trans_choice(
+                                        'voyager::generic.showing_entries', $dataTypeContent->total(), [
+                                            'from' => $dataTypeContent->firstItem(),
+                                            'to' => $dataTypeContent->lastItem(),
+                                            'all' => $dataTypeContent->total()
+                                        ]) }}</div>
+                                </div>
+                                <div class="pull-right">
+                                    {{ $dataTypeContent->appends([
+                                        's' => $search->value,
+                                        'filter' => $search->filter,
+                                        'key' => $search->key,
+                                        'order_by' => $orderBy,
+                                        'sort_order' => $sortOrder
+                                    ])->links() }}
+                                </div>
+                            @endif
                         </div>
-                        @if ($isServerSide)
-                            <div class="pull-left">
-                                <div role="status" class="show-res" aria-live="polite">{{ trans_choice(
-                                    'voyager::generic.showing_entries', $dataTypeContent->total(), [
-                                        'from' => $dataTypeContent->firstItem(),
-                                        'to' => $dataTypeContent->lastItem(),
-                                        'all' => $dataTypeContent->total()
-                                    ]) }}</div>
-                            </div>
-                            <div class="pull-right">
-                                {{ $dataTypeContent->appends([
-                                    's' => $search->value,
-                                    'filter' => $search->filter,
-                                    'key' => $search->key,
-                                    'order_by' => $orderBy,
-                                    'sort_order' => $sortOrder
-                                ])->links() }}
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- Single delete modal --}}
+        {{-- Single delete modal --}}
     <div class="modal modal-danger fade" tabindex="-1" id="delete_modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
