@@ -17,7 +17,7 @@ class Pasantia extends Model
 
     public function estudiantes()
     {
-        return $this->belongsToMany('App\Estudiante', 'Asistencias')->withPivot('asistencia','date')->withTimestamps();
+        return $this->belongsToMany('App\Estudiante', 'asistencias')->withPivot('asistencia','date')->withTimestamps();
     }
 
     public function alertAlumno($cantidad, $limite)

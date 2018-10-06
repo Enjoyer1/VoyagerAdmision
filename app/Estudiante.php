@@ -26,7 +26,7 @@ class Estudiante extends Model
     }
     public function pasantias()
     {
-        return  $this->belongsToMany('App\Pasantia','Asistencias')->withPivot('asistencia','date')->withTimestamps();
+        return  $this->belongsToMany('App\Pasantia','asistencias')->withPivot('asistencia','date')->withTimestamps();
     }
 
 

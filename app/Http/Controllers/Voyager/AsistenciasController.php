@@ -57,7 +57,7 @@ class AsistenciasController extends VoyagerBaseController
 
             $search->value=$pasantiaId;
             $search->key='pasantia_id';
-            $search->filter='contains';
+            $search->filter='equals';
         }
 
 
@@ -227,12 +227,13 @@ class AsistenciasController extends VoyagerBaseController
         // Check if BREAD is Translatable
         $isModelTranslatable = is_bread_translatable($dataTypeContent);
 
-        // get nombres ids
+        // get  ids
         $estudianteId=Asistencia::findOrFail($id)->estudiante_id;
         $pasantiaId=Asistencia::findOrFail($id)->pasantia_id;
 
+        //get datos estudiante y pasantia
         $estudianteNombre=Estudiante::findOrFail($estudianteId)->nombre;
-        $pasantiaNombre=Estudiante::findOrFail($pasantiaId)->nombre;
+        $pasantiaNombre=Pasantia::findOrFail($pasantiaId)->nombre;
         $fechaPasantia=Pasantia::findOrFail($pasantiaId)->fecha;
 
         $view = 'voyager::bread.edit-add';
