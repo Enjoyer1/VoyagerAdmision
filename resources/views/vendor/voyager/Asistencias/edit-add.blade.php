@@ -202,8 +202,11 @@
             });
             $('[data-toggle="tooltip"]').tooltip();
 
-            var date = "{{$fechaPasantia }}";
-            $('input[name="date"').val(date);
+            @if(isset($fechaPasantia) && !is_null($dataTypeContent->getKey()))
+                 var date = "{{$fechaPasantia }}";
+                 $('input[name="date"').val(date);
+            @endif
+
         });
     </script>
 @stop
